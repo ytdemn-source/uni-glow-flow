@@ -278,8 +278,7 @@
   /* Stagger children */
   .stagger-children > * {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
-    filter: blur(3px);
+    transform: translateY(16px);
   }
 
   .stagger-children.visible > *:nth-child(1) { transition-delay: 0ms; }
