@@ -1,50 +1,101 @@
 
+## PWA Install Support + Notice Bookmarks
 
-## Performance & UI Polish
+Both features together — install support makes it a proper mobile app, bookmarks make daily student use much more practical.
 
-After reviewing the codebase, here are the main sources of lag and UI roughness, with fixes:
+---
 
-### Performance Fixes
+### Feature 1: PWA Install Support
 
-**1. `useParallax.ts` — eliminate scroll-driven re-renders**
-The parallax hook calls `setState` on every scroll event, re-rendering the entire component tree. Replace with `useRef` + direct DOM manipulation via `requestAnimationFrame` to bypass React rendering entirely.
+Makes the app installable on Android and iPhone home screens, working offline like a native app.
 
-**2. `src/index.css` — reduce expensive `backdrop-filter` and `filter: blur`**
-- `.glass-card` uses `backdrop-filter: blur(24px) saturate(1.8)` — extremely heavy on mobile GPUs. Reduce to `blur(12px) saturate(1.2)` and use a more opaque background to compensate.
-- `.reveal` and `.stagger-children` animate `filter: blur(4px)` on every card — remove the blur from scroll animations entirely (keep opacity + translateY only). This alone will significantly reduce jank.
+**What changes:**
 
-**3. `BackgroundImage.tsx` — optimize background rendering**
-- Remove parallax from background image (it causes constant repaints of a large blurred image). Use a static `background-position: center` with CSS `will-change: auto`.
-- The `h-[150%]` oversized image forces large compositing layers. Change to `h-full object-cover`.
+**`vite.config.ts`** — Add `vite-plugin-pwa` configuration:
+- App manifest: name "GS Hub", short_name "GS Hub", theme color, icons
+- Service worker strategy: `NetworkFirst` for API calls, `CacheFirst` for assets
+- Exclude `/~oauth` from the service worker navigation fallback (required for auth safety)
+- Since there's already a custom `public/sw.js` for push notifications, we configure the PWA plugin to not conflict with it by using `injectManifest` mode and keeping push logic in the existing service worker
 
-**4. `Header.tsx` — throttle scroll listener**
-Add passive listener and only update state when the threshold actually changes (debounce the boolean flip).
+**`index.html`** — Add PWA meta tags:
+- `theme-color`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-status-bar-style`
+- Apple touch icon link
+- `manifest.json` link
 
-### UI Polish (Mobile-First)
+**`public/manifest.json`** _(new file)_ — Web app manifest:
+```json
+{
+  "name": "GS Hub - Galsi Student Hub",
+  "short_name": "GS Hub",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#ffffff",
+  "icons": [{ "src": "/logo.png", "sizes": "512x512", "type": "image/png" }]
+}
+```
 
-**5. Tighter mobile spacing across all sections**
-- Reduce section padding from `py-24` to `py-12` on mobile (keep desktop as-is)
-- Reduce section header margins from `mb-16` to `mb-8` on mobile
-- Files affected: `QuickLinksSection`, `DepartmentsSection`, `ServicesSection`, `ContactSection`
+**`src/hooks/usePWAInstall.ts`** _(new file)_ — Custom hook:
+- Listens for the `beforeinstallprompt` browser event
+- Stores the prompt and exposes `canInstall`, `installApp()` functions
+- Detects if already installed via `display-mode: standalone`
 
-**6. Smoother mobile menu transition**
-Replace the instant show/hide in `Header.tsx` with a slide-down animation using `max-height` transition instead of conditional rendering.
+**`src/components/PWAInstallBanner.tsx`** _(new file)_ — Install prompt UI:
+- A subtle sticky banner at the bottom on mobile only
+- "Add to Home Screen" button that triggers the native install prompt
+- Dismissable (remembers dismissal in `localStorage`)
+- Also shows iOS instructions (since iOS doesn't support `beforeinstallprompt`)
 
-**7. Cleaner notice cards**
-- Reduce glass-card-elevated shadow intensity for a flatter, modern look
-- Tighten padding on mobile cards
+**`src/pages/Index.tsx`** — Import and render `<PWAInstallBanner />`
 
-### Files to modify
+---
 
-| File | Change |
+### Feature 2: Notice Bookmarks
+
+Lets students save important notices locally and view them anytime — even offline.
+
+**What changes:**
+
+**`src/hooks/useBookmarks.ts`** _(new file)_ — Bookmark logic:
+- Stores bookmarked notices in `localStorage` as `galsi_bookmarks`
+- Exposes: `bookmarks`, `toggleBookmark(notice)`, `isBookmarked(id)`, `clearBookmarks()`
+
+**`src/components/NoticeCard.tsx`** — Add bookmark button:
+- A `Bookmark` / `BookmarkCheck` icon button in the action row
+- Filled/colored when bookmarked, outline when not
+- No visual clutter — fits alongside existing Open + Download buttons
+
+**`src/components/BookmarksPanel.tsx`** _(new file)_ — Saved notices drawer:
+- A slide-in Sheet/Drawer component
+- Lists all bookmarked notices with the same card layout
+- Empty state: "No bookmarks yet — tap the bookmark icon on any notice"
+- Clear all button
+
+**`src/components/NoticesSection.tsx`** — Add bookmarks button in the header toolbar:
+- A `Bookmark` icon button next to the Refresh button that opens `BookmarksPanel`
+- Shows a count badge when there are bookmarks (e.g., a small red dot or number)
+
+---
+
+### Technical Details
+
+- PWA plugin: `vite-plugin-pwa` (needs to be added as a dev dependency)
+- Bookmarks are stored entirely in `localStorage` — no backend needed, works offline
+- The existing push notification service worker (`public/sw.js`) is kept as-is; the PWA manifest is added separately without conflicting
+- The install banner only shows on mobile (using CSS `md:hidden` or JS `navigator.userAgent` check) and only when the app is not already installed
+- iOS detection: check `navigator.standalone` and `userAgent` for Safari on iPhone/iPad to show manual instructions ("Tap Share → Add to Home Screen")
+
+### Files to create/modify
+
+| File | Action |
 |---|---|
-| `src/hooks/useParallax.ts` | Ref-based DOM update, no re-renders |
-| `src/index.css` | Reduce backdrop-filter blur, remove filter:blur from animations |
-| `src/components/BackgroundImage.tsx` | Remove parallax, simplify to static bg |
-| `src/components/Header.tsx` | Throttle scroll, animate mobile menu |
-| `src/components/QuickLinksSection.tsx` | Mobile spacing |
-| `src/components/DepartmentsSection.tsx` | Mobile spacing |
-| `src/components/ServicesSection.tsx` | Mobile spacing |
-| `src/components/ContactSection.tsx` | Mobile spacing |
-| `src/components/NoticesSection.tsx` | Mobile spacing |
-
+| `vite.config.ts` | Modify — add vite-plugin-pwa |
+| `index.html` | Modify — add PWA meta tags + manifest link |
+| `public/manifest.json` | Create |
+| `src/hooks/usePWAInstall.ts` | Create |
+| `src/components/PWAInstallBanner.tsx` | Create |
+| `src/hooks/useBookmarks.ts` | Create |
+| `src/components/NoticeCard.tsx` | Modify — add bookmark button |
+| `src/components/BookmarksPanel.tsx` | Create |
+| `src/components/NoticesSection.tsx` | Modify — add bookmarks toolbar button with badge |
+| `src/pages/Index.tsx` | Modify — render PWAInstallBanner |

@@ -12,14 +12,14 @@ export function DepartmentsSection() {
   };
 
   return (
-    <section id="departments" className="py-24 md:py-32 relative" ref={ref}>
+    <section id="departments" className="py-12 md:py-24 lg:py-32 relative" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/30 to-transparent" />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className={`reveal ${isVisible ? 'visible' : ''}`}>
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Our Departments
             </h2>

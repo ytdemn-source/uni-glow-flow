@@ -1,12 +1,8 @@
 import campusBg from '@/assets/campus-bg-2.jpg';
-import { useParallax } from '@/hooks/useParallax';
 
 export function BackgroundImage() {
-  const parallaxOffset = useParallax(0.5);
-
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden h-screen">
-      {/* Campus background image with parallax effect */}
+    <div className="fixed inset-0 -z-10 overflow-hidden">
       <img
         src={campusBg}
         alt=""
@@ -14,10 +10,9 @@ export function BackgroundImage() {
         loading="eager"
         decoding="async"
         fetchPriority="high"
-        className="absolute inset-0 w-full h-[150%] object-cover object-center blur-[2px] will-change-transform"
-        style={{ transform: `translateY(-${parallaxOffset}px)` }}
+        className="absolute inset-0 w-full h-full object-cover object-center blur-[2px]"
       />
-      {/* Light mode subtle overlay */}
+      {/* Light mode overlay */}
       <div 
         className="absolute inset-0 dark:hidden"
         style={{

@@ -23,7 +23,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-32 relative" ref={ref}>
+    <section id="contact" className="py-12 md:py-24 lg:py-32 relative" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
       
