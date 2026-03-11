@@ -14,9 +14,11 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" && componentTagger(),
     VitePWA({
-      registerType: "autoUpdate",
-      // Use the existing public/sw.js as the service worker (keeps push notifications)
-      // We just add the manifest and meta tags for installability
+      strategies: "injectManifest",
+      injectRegister: false,
+      injectManifest: {
+        injectionPoint: undefined,
+      },
       manifest: {
         name: "GS Hub - Galsi Student Hub",
         short_name: "GS Hub",
@@ -36,19 +38,6 @@ export default defineConfig(({ mode }) => ({
             src: "/favicon.png",
             sizes: "192x192",
             type: "image/png",
-          },
-        ],
-      },
-      workbox: {
-        navigateFallbackDenylist: [/^\/~oauth/],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 },
-            },
           },
         ],
       },

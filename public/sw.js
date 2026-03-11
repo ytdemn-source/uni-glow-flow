@@ -99,3 +99,30 @@ self.addEventListener('activate', function(event) {
   console.log('[Service Worker] Activated');
   event.waitUntil(clients.claim());
 });
+
+// Basic network-first caching for offline support
+self.addEventListener('fetch', function(event) {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+
+  // Skip chrome-extension and other non-http(s) requests
+  if (!event.request.url.startsWith('http')) return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then(function(response) {
+        // Clone and cache successful responses
+        if (response.status === 200) {
+          const responseClone = response.clone();
+          caches.open('gs-hub-cache-v1').then(function(cache) {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return response;
+      })
+      .catch(function() {
+        // Fallback to cache when offline
+        return caches.match(event.request);
+      })
+  );
+});
