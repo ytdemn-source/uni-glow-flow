@@ -52,11 +52,11 @@ export function QuickLinksSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
 
   return (
-    <section id="quick-links" className="py-24 md:py-32" ref={ref}>
+    <section id="quick-links" className="py-12 md:py-24 lg:py-32" ref={ref}>
       <div className="container mx-auto px-4">
         <div className={`reveal ${isVisible ? 'visible' : ''}`}>
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-8 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Quick Access
             </h2>
