@@ -1,35 +1,50 @@
 
 
-## Google Ads (AdSense) Integration
+## Performance & UI Polish
 
-You can add Google AdSense to your app to earn revenue from ad impressions and clicks. Here's what's involved:
+After reviewing the codebase, here are the main sources of lag and UI roughness, with fixes:
 
-### Prerequisites (outside Lovable)
-1. **Sign up for Google AdSense** at [adsense.google.com](https://adsense.google.com)
-2. Get your site approved — Google reviews your site content, traffic, and policies
-3. Your published URL (`uni-glow-flow.lovable.app`) or a custom domain can be submitted
-4. Once approved, you'll get a **Publisher ID** (ca-pub-XXXXXXX) and **Ad Slot IDs**
+### Performance Fixes
 
-### What I'd build
+**1. `useParallax.ts` — eliminate scroll-driven re-renders**
+The parallax hook calls `setState` on every scroll event, re-rendering the entire component tree. Replace with `useRef` + direct DOM manipulation via `requestAnimationFrame` to bypass React rendering entirely.
 
-**`src/components/AdBanner.tsx`** — Reusable ad component:
-- Loads the AdSense script (`pagead2.googlesyndication.com`)
-- Renders `<ins class="adsbygoogle">` ad units
-- Supports different ad formats: banner, in-feed, in-article
-- Responsive sizing for mobile
+**2. `src/index.css` — reduce expensive `backdrop-filter` and `filter: blur`**
+- `.glass-card` uses `backdrop-filter: blur(24px) saturate(1.8)` — extremely heavy on mobile GPUs. Reduce to `blur(12px) saturate(1.2)` and use a more opaque background to compensate.
+- `.reveal` and `.stagger-children` animate `filter: blur(4px)` on every card — remove the blur from scroll animations entirely (keep opacity + translateY only). This alone will significantly reduce jank.
 
-**Ad placements** (non-intrusive spots):
-- Between notice cards (every 5th notice) — in-feed ads
-- Below the Hero section — banner ad
-- Inside the Bookmarks panel — small banner
+**3. `BackgroundImage.tsx` — optimize background rendering**
+- Remove parallax from background image (it causes constant repaints of a large blurred image). Use a static `background-position: center` with CSS `will-change: auto`.
+- The `h-[150%]` oversized image forces large compositing layers. Change to `h-full object-cover`.
 
-**`src/pages/Index.tsx`** — Insert ad components at strategic positions
+**4. `Header.tsx` — throttle scroll listener**
+Add passive listener and only update state when the threshold actually changes (debounce the boolean flip).
 
-### Realistic expectations
-- College apps typically have low traffic, so earnings will be modest (a few dollars/month initially)
-- AdSense requires decent traffic and original content for approval
-- Alternative: **Google Ad Manager** or simple affiliate links may be easier to start with
+### UI Polish (Mobile-First)
 
-### Would you like to proceed?
-I need your AdSense Publisher ID and Ad Slot ID to implement this. If you don't have an AdSense account yet, sign up first and get approved, then come back and I'll wire it up.
+**5. Tighter mobile spacing across all sections**
+- Reduce section padding from `py-24` to `py-12` on mobile (keep desktop as-is)
+- Reduce section header margins from `mb-16` to `mb-8` on mobile
+- Files affected: `QuickLinksSection`, `DepartmentsSection`, `ServicesSection`, `ContactSection`
+
+**6. Smoother mobile menu transition**
+Replace the instant show/hide in `Header.tsx` with a slide-down animation using `max-height` transition instead of conditional rendering.
+
+**7. Cleaner notice cards**
+- Reduce glass-card-elevated shadow intensity for a flatter, modern look
+- Tighten padding on mobile cards
+
+### Files to modify
+
+| File | Change |
+|---|---|
+| `src/hooks/useParallax.ts` | Ref-based DOM update, no re-renders |
+| `src/index.css` | Reduce backdrop-filter blur, remove filter:blur from animations |
+| `src/components/BackgroundImage.tsx` | Remove parallax, simplify to static bg |
+| `src/components/Header.tsx` | Throttle scroll, animate mobile menu |
+| `src/components/QuickLinksSection.tsx` | Mobile spacing |
+| `src/components/DepartmentsSection.tsx` | Mobile spacing |
+| `src/components/ServicesSection.tsx` | Mobile spacing |
+| `src/components/ContactSection.tsx` | Mobile spacing |
+| `src/components/NoticesSection.tsx` | Mobile spacing |
 
