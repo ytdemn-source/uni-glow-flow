@@ -241,4 +241,18 @@ export const departmentsData: DepartmentData[] = [
     results: [],
     notices: [],
   },
+  {
+    name: 'Vocational Education & Training',
+    href: 'https://www.buruniv.ac.in/NEP2020.php',
+    color: 'from-rose-500/20 to-pink-500/20',
+    about: 'The Vocational Education & Training department offers skill-based courses under NEP 2020, including Retail and Sales Management. These VOC Minor and VOC Exit Point courses equip students with practical industry-ready skills in retail operations, customer service, sales techniques, and business communication.',
+    teachers: [],
+    syllabus: [
+      { title: 'VOC Minor Syllabus (Sem-III, V & VI)', url: 'https://www.buruniv.ac.in/Downloads/Syllabus/Syllabus_VOC_MINOR_NEP2023-2024.pdf', type: 'pdf' },
+      { title: 'VOC Exit Point Syllabus (Sem-II, Sem-IV)', url: 'https://www.buruniv.ac.in/Downloads/Syllabus/Syllabus_VOC_EXITPOINT_NEP2023-2024.pdf', type: 'pdf' },
+    ],
+    routine: [],
+    results: [],
+    notices: [],
+  },
 ];
