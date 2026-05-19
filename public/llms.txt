@@ -1,0 +1,18 @@
+# GS Hub — Galsi Student Hub
+
+> Student portal for Galsi Mahavidyalaya (গলসী মহাবিদ্যালয়), a NAAC 'B' accredited college affiliated to The University of Burdwan. Provides latest notices, academic updates, results, admission info, departments, and important links.
+
+GS Hub is a Progressive Web App built for students of Galsi Mahavidyalaya. It aggregates official college notices, exam results, admission information, department details, and quick links to university and government services. Users can bookmark notices, subscribe to push notifications for new updates, and install the app to their home screen.
+
+## Pages
+
+- [Home](/): Latest college notices, departments, quick links, services, and contact info for Galsi Mahavidyalaya.
+
+## Topics covered
+
+- College notices and circulars from Galsi Mahavidyalaya
+- Admission information (UG admissions, NEP 2020, CBCS)
+- Exam results and University of Burdwan updates
+- Departments: Bengali, English, History, Political Science, Sanskrit, Philosophy, Education, Geography, Mathematics, Physics, Chemistry, Botany, Zoology, Computer Science, Physical Education, Vocational Retail & Sales
+- Vocational curriculum and Burdwan University syllabus PDFs
+- Important links: University of Burdwan, WBCHSE, UGC, Banglar Uchchashiksha portal
