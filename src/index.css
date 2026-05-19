@@ -27,7 +27,7 @@
 
     /* Muted with warmth */
     --muted: 165 15% 90%;
-    --muted-foreground: 200 20% 40%;
+    --muted-foreground: 200 25% 30%;
 
     /* Vibrant emerald accent */
     --accent: 155 60% 40%;
@@ -108,7 +108,7 @@
     --secondary-foreground: 165 20% 94%;
 
     --muted: 195 20% 18%;
-    --muted-foreground: 165 15% 55%;
+    --muted-foreground: 165 20% 70%;
 
     --accent: 155 60% 48%;
     --accent-foreground: 195 30% 8%;
