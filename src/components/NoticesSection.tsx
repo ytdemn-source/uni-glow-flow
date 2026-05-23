@@ -233,7 +233,7 @@ export function NoticesSection() {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 md:mb-2">
-                    Latest Notices
+                    Galsi College Notices, Results & Syllabus
                   </h2>
                   <p className="text-sm md:text-base text-muted-foreground max-w-lg">
                     Official announcements from{' '}
