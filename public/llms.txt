@@ -1,18 +1,19 @@
-# GS Hub — Galsi Student Hub
+# Galsi College Student Hub (GS Hub) — Galsi Mahavidyalaya
 
-> Student portal for Galsi Mahavidyalaya (গলসী মহাবিদ্যালয়), a NAAC 'B' accredited college affiliated to The University of Burdwan. Provides latest notices, academic updates, results, admission info, departments, and important links.
+> Unofficial student hub for Galsi Mahavidyalaya (Galsi College), Purba Bardhaman, West Bengal. The fastest way to get Galsi College notices, results, syllabus, admission info, and department details. NAAC 'B' accredited, affiliated to The University of Burdwan. Built by Jakir.
 
-GS Hub is a Progressive Web App built for students of Galsi Mahavidyalaya. It aggregates official college notices, exam results, admission information, department details, and quick links to university and government services. Users can bookmark notices, subscribe to push notifications for new updates, and install the app to their home screen.
+GS Hub (also called Galsi Student Hub or Galsi College Student Hub) is a Progressive Web App for students of Galsi Mahavidyalaya (গলসী মহাবিদ্যালয়). It aggregates official college notices, exam results, admission information, department details, and quick links to university and government services. Users can bookmark notices, subscribe to push notifications for new updates, and install the app to their home screen.
 
 ## Pages
 
-- [Home](/): Latest college notices, departments, quick links, services, and contact info for Galsi Mahavidyalaya.
+- [Home](/): Galsi College notices, results, syllabus, departments, quick links, services and contact info for Galsi Mahavidyalaya.
 
 ## Topics covered
 
-- College notices and circulars from Galsi Mahavidyalaya
-- Admission information (UG admissions, NEP 2020, CBCS)
-- Exam results and University of Burdwan updates
+- Galsi College notices and circulars from Galsi Mahavidyalaya
+- Galsi College admission information (UG admissions 2025-26, NEP 2020, CBCS, WBCAP portal)
+- Galsi College results and University of Burdwan exam updates
+- Galsi College syllabus and Burdwan University curriculum PDFs
 - Departments: Bengali, English, History, Political Science, Sanskrit, Philosophy, Education, Geography, Mathematics, Physics, Chemistry, Botany, Zoology, Computer Science, Physical Education, Vocational Retail & Sales
-- Vocational curriculum and Burdwan University syllabus PDFs
 - Important links: University of Burdwan, WBCHSE, UGC, Banglar Uchchashiksha portal
+- Built and maintained by Jakir
