@@ -57,13 +57,14 @@ export function Hero() {
             Estd: 2007 • Government Aided • Affiliated to The University of Burdwan
           </p>
 
-          {/* Description - Hidden on mobile */}
+          {/* SEO-rich description — visible on all viewports */}
           <p 
-            className="hidden md:block text-sm md:text-base text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed animate-fade-in-up"
+            className="text-xs md:text-base text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-10 leading-relaxed animate-fade-in-up px-2"
             style={{ animationDelay: '0.5s' }}
           >
-            Access the latest notices, academic updates, and important links — 
-            all in one student-friendly dashboard.
+            The student hub for <strong>Galsi Mahavidyalaya</strong> (Galsi College), Purba Bardhaman.
+            Find the latest <strong>Galsi College notices</strong>, results, syllabus, admission updates
+            and department info — all in one place. Built by Jakir for students of Galsi College.
           </p>
 
           {/* CTAs - Compact on mobile */}
