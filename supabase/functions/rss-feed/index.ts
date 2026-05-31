@@ -15,6 +15,25 @@ interface Notice {
   category: string;
 }
 
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  result: ['result', 'grade card', 'marksheet', 'marks', 'score'],
+  routine: ['routine', 'schedule', 'time table', 'timetable', 'class schedule'],
+  syllabus: ['syllabus', 'curriculum', 'course outline', 'course structure'],
+  exam: ['exam', 'examination', 'test', 'assessment'],
+  admission: ['admission', 'registration', 'enrollment', 'enrolment'],
+  scholarship: ['scholarship', 'stipend', 'kanyashree', 'aikyashree', 'oasis', 'svmcm'],
+  holiday: ['holiday', 'vacation', 'leave', 'closed'],
+  important: ['urgent', 'important', 'form fill', 'form submission', 'last date', 'deadline'],
+};
+
+function categorizeNotice(title: string): string {
+  const lower = title.toLowerCase();
+  for (const [cat, kws] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (kws.some((k) => lower.includes(k))) return cat;
+  }
+  return 'general';
+}
+
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
