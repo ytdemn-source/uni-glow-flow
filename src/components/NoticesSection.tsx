@@ -1,4 +1,4 @@
-import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark } from 'lucide-react';
+import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark, Rss } from 'lucide-react';
 import { NoticeCard } from './NoticeCard';
 import { NoticeSearch } from './NoticeSearch';
 import { NoticeCategoryFilter } from './NoticeCategoryFilter';
@@ -249,6 +249,23 @@ export function NoticesSection() {
                 </div>
                 <div className="flex items-center gap-2 self-start md:self-auto">
                   <NotificationSubscribe />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    asChild
+                    title="Subscribe via RSS feed"
+                  >
+                    <a
+                      href="https://wdvywhstuiywmtpgrznq.supabase.co/functions/v1/rss-feed"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Subscribe to Galsi College notices RSS feed"
+                    >
+                      <Rss className="w-4 h-4" />
+                      <span className="hidden sm:inline">RSS</span>
+                    </a>
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
