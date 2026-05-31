@@ -1,4 +1,4 @@
-import { Heart, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Heart, ExternalLink, AlertTriangle, Rss } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 export function Footer() {
@@ -44,6 +44,16 @@ export function Footer() {
             >
               Official Website
               <ExternalLink className="w-3 h-3" />
+            </a>
+            <a
+              href="https://wdvywhstuiywmtpgrznq.supabase.co/functions/v1/rss-feed"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-flex items-center gap-1"
+              aria-label="Subscribe to Galsi College notices RSS feed"
+            >
+              <Rss className="w-3.5 h-3.5" />
+              RSS Feed
             </a>
           </nav>
 

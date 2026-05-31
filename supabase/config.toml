@@ -1,1 +1,4 @@
 project_id = "wdvywhstuiywmtpgrznq"
+
+[functions.rss-feed]
+verify_jwt = false
