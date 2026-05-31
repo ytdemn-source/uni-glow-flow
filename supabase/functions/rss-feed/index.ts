@@ -114,7 +114,7 @@ serve(async (req) => {
         url: pdfUrl,
         isNew,
         isImportant: false,
-        category: "general",
+        category: categorizeNotice(title),
       });
     }
 
@@ -123,20 +123,19 @@ serve(async (req) => {
 
     const now = new Date().toUTCString();
     const siteUrl = "https://uni-glow-flow.lovable.app";
+    const feedUrl = "https://wdvywhstuiywmtpgrznq.supabase.co/functions/v1/rss-feed";
 
     const items = notices.slice(0, 30).map((notice) => {
       const pubDate = formatRfc822Date(notice.date);
       const category = notice.category.charAt(0).toUpperCase() + notice.category.slice(1);
-      const badge = notice.isNew ? " [NEW]" : "";
-      const description = notice.url.includes(".pdf")
-        ? `PDF notice from Galsi Mahavidyalaya. Published on ${notice.date}.`
-        : `Notice from Galsi Mahavidyalaya. Published on ${notice.date}.`;
+      const description = notice.url.toLowerCase().includes(".pdf")
+        ? `${category} notice from Galsi Mahavidyalaya (Galsi College). Published on ${notice.date}. Click to view PDF.`
+        : `${category} notice from Galsi Mahavidyalaya (Galsi College). Published on ${notice.date}.`;
 
-      return `
-    <item>
-      <title>${escapeXml(notice.title + badge)}</title>
+      return `    <item>
+      <title>${escapeXml(notice.title)}</title>
       <link>${escapeXml(notice.url)}</link>
-      <guid>${escapeXml(siteUrl + "/#notice-" + notice.id)}</guid>
+      <guid isPermaLink="false">galsi-${notice.id}-${notice.date}</guid>
       <pubDate>${pubDate}</pubDate>
       <category>${escapeXml(category)}</category>
       <description>${escapeXml(description)}</description>
@@ -151,7 +150,8 @@ serve(async (req) => {
     <description>Latest notices, results, and announcements from Galsi Mahavidyalaya (Galsi College), Purba Bardhaman. Automatically updated from the official college website.</description>
     <language>en-us</language>
     <lastBuildDate>${now}</lastBuildDate>
-    <atom:link href="${siteUrl}/functions/v1/rss-feed" rel="self" type="application/rss+xml" />
+    <ttl>15</ttl>
+    <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <image>
       <url>${siteUrl}/favicon.ico</url>
       <title>Galsi College Notices - GS Hub</title>
