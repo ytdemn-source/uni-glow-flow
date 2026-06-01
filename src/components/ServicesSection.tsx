@@ -1,5 +1,5 @@
 import { 
-  CreditCard, 
+  LogIn,
   FileCheck, 
   Users,
   Award,
@@ -10,10 +10,11 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const services = [
   {
-    icon: CreditCard,
-    title: 'Fee Payment',
-    description: 'Pay tuition and other fees online',
-    href: 'https://galsimahavidyalaya.ac.in/fees-structure-2/',
+    icon: LogIn,
+    title: 'Student Login',
+    description: 'Sign in to the official student portal',
+    href: 'https://galsimahavidyalaya.in/student_login.aspx#!',
+    highlight: true,
   },
   {
     icon: FileCheck,
