@@ -81,7 +81,7 @@ export function ServicesSection() {
                 rel="noopener noreferrer"
                 className={`p-4 md:p-6 text-center hover-lift group cursor-pointer ${
                   service.highlight
-                    ? 'relative rounded-2xl bg-gradient-to-br from-primary/20 via-accent/15 to-primary/10 border-2 border-primary/40 shadow-lg shadow-primary/20 ring-2 ring-primary/30 ring-offset-2 ring-offset-background animate-pulse-glow'
+                    ? 'relative rounded-2xl bg-gradient-to-br from-primary/20 via-accent/15 to-primary/10 border-2 border-primary/40 shadow-lg shadow-primary/20 ring-2 ring-primary/30 ring-offset-2 ring-offset-background animate-pulse-soft'
                     : 'glass-card-elevated'
                 }`}
               >
