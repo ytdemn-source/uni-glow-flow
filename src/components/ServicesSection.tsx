@@ -73,12 +73,27 @@ export function ServicesSection() {
                 href={service.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-card-elevated p-4 md:p-6 text-center hover-lift group cursor-pointer"
+                className={`p-4 md:p-6 text-center hover-lift group cursor-pointer ${
+                  service.highlight
+                    ? 'relative rounded-2xl bg-gradient-to-br from-primary/20 via-accent/15 to-primary/10 border-2 border-primary/40 shadow-lg shadow-primary/20 ring-2 ring-primary/30 ring-offset-2 ring-offset-background animate-pulse-glow'
+                    : 'glass-card-elevated'
+                }`}
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 rounded-xl bg-gradient-to-br from-primary/15 to-accent/10 flex items-center justify-center group-hover:from-primary/25 group-hover:to-accent/20 transition-all duration-300 border border-primary/10">
-                  <service.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                {service.highlight && (
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground px-2 py-0.5 rounded-full shadow-md">
+                    New
+                  </span>
+                )}
+                <div className={`w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 rounded-xl flex items-center justify-center transition-all duration-300 border ${
+                  service.highlight
+                    ? 'bg-gradient-to-br from-primary/40 to-accent/30 border-primary/40 group-hover:from-primary/60 group-hover:to-accent/50'
+                    : 'bg-gradient-to-br from-primary/15 to-accent/10 border-primary/10 group-hover:from-primary/25 group-hover:to-accent/20'
+                }`}>
+                  <service.icon className={`w-5 h-5 md:w-6 md:h-6 ${service.highlight ? 'text-primary' : 'text-primary'}`} />
                 </div>
-                <h3 className="text-xs md:text-sm font-semibold text-foreground mb-1 group-hover:text-primary transition-colors duration-300">
+                <h3 className={`text-xs md:text-sm font-semibold mb-1 transition-colors duration-300 ${
+                  service.highlight ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                }`}>
                   {service.title}
                 </h3>
                 <p className="text-xs text-muted-foreground leading-relaxed hidden md:block">
