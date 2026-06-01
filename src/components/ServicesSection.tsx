@@ -8,7 +8,13 @@ import {
 } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const services = [
+const services: Array<{
+  icon: typeof LogIn;
+  title: string;
+  description: string;
+  href: string;
+  highlight?: boolean;
+}> = [
   {
     icon: LogIn,
     title: 'Student Login',
