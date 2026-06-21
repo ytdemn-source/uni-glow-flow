@@ -53,5 +53,32 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ verify: verifyText, add: { status: addR.status, body: addText }, sitemap: { status: smR.status } }), { status: 200, headers: corsHeaders });
   }
 
+  if (action === "indexnow") {
+    // IndexNow: notify Bing/Yandex/etc. Google ignores it but it's free Bing traffic.
+    const key = "a7f3e9c2b8d54f6a91e0c7b4d2f8a516"; // static key string
+    const keyUrl = `${SITE}${key}.txt`;
+    const r = await fetch("https://api.indexnow.org/IndexNow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        host: "uni-glow-flow.lovable.app",
+        key,
+        keyLocation: keyUrl,
+        urlList: [SITE, `${SITE}sitemap.xml`],
+      }),
+    });
+    return new Response(JSON.stringify({ status: r.status, body: await r.text() }), {
+      status: 200,
+      headers: corsHeaders,
+    });
+  }
+
+  if (action === "resubmit-sitemap") {
+    const enc = encodeURIComponent(SITE);
+    const sm = encodeURIComponent(`${SITE}sitemap.xml`);
+    const r = await fetch(`${GATEWAY}/webmasters/v3/sites/${enc}/sitemaps/${sm}`, { method: "PUT", headers });
+    return new Response(JSON.stringify({ status: r.status, body: await r.text() }), { status: 200, headers: corsHeaders });
+  }
+
   return new Response("unknown action", { status: 400, headers: corsHeaders });
 });
