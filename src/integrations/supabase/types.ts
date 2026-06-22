@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      note_comments: {
+        Row: {
+          author_name: string
+          body: string
+          created_at: string
+          id: string
+          note_id: string
+        }
+        Insert: {
+          author_name: string
+          body: string
+          created_at?: string
+          id?: string
+          note_id: string
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          note_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_comments_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notes: {
+        Row: {
+          body: string
+          created_at: string
+          file_name: string | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          tags: string[]
+          title: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          tags?: string[]
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          file_name?: string | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          tags?: string[]
+          title?: string
+        }
+        Relationships: []
+      }
       notification_history: {
         Row: {
           category: string

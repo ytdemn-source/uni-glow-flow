@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
+import { NotesPromoCard } from '@/components/NotesPromoCard';
 
 // Below-the-fold — lazy loaded so the initial bundle stays small
 const BackgroundImage = lazy(() =>
@@ -64,6 +65,9 @@ const Index = () => {
         <Suspense fallback={null}>
           <DepartmentsSection />
           <QuickLinksSection />
+          <section className="container mx-auto px-4 py-8 md:py-12">
+            <NotesPromoCard />
+          </section>
           <ServicesSection />
           <ContactSection />
         </Suspense>
