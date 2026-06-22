@@ -65,6 +65,9 @@ const Index = () => {
         <Suspense fallback={null}>
           <DepartmentsSection />
           <QuickLinksSection />
+          <section className="container mx-auto px-4 py-8 md:py-12">
+            <NotesPromoCard />
+          </section>
           <ServicesSection />
           <ContactSection />
         </Suspense>
