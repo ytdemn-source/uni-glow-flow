@@ -1,63 +1,82 @@
+# Proper Admin System
 
-## Notes & Help Library
+Replace the hardcoded `jakir03` code with a real authentication + role-based admin system, plus a dedicated `/admin` dashboard.
 
-A read-only resource library where students can browse, search, and download study notes / help text uploaded by admin, with category tags and a comments section under each note.
+## Auth
 
-### User flows
+- Enable Lovable Cloud auth: email + password AND Google sign-in.
+- Signup remains open (needed so `vpn99vip99@gmail.com` can create the account), but only users granted the `admin` role can access anything admin.
+- Public site remains fully anonymous — no login required for students.
 
-**Students (no login):**
-- See a promo card "Notes & Help" on the homepage → click → /notes
-- Browse all notes, filter by subject/semester tag, search by title
-- Open a note → read text content, download attached PDF/image, post a comment with their name
+## Roles (secure pattern)
 
-**Admin (uses existing `jakir03` code):**
-- On /notes, an "Admin" button opens an upload dialog (gated by the admin code)
-- Upload: title, body text (markdown), tags (multi-select), optional file (PDF/image, ≤10 MB)
-- Delete own notes / moderate comments
+New `app_role` enum (`admin`) and `user_roles` table (separate from profiles — never store roles on a user/profile table). Access is checked via a `SECURITY DEFINER` function `has_role(uuid, app_role)` used by RLS and edge functions.
 
-### Pages & components
+Seed the first admin: after `vpn99vip99@gmail.com` signs up once, a trigger auto-grants `admin` to that verified email. Any additional admins are added from the dashboard.
+
+## Routes
 
 ```text
-src/pages/Notes.tsx              list + search + tag filter + admin button
-src/pages/NoteDetail.tsx         /notes/:id — content, download, comments
-src/components/NotesPromoCard.tsx   homepage card linking to /notes
-src/components/NoteListItem.tsx
-src/components/NoteUploadDialog.tsx (admin-gated)
-src/components/NoteComments.tsx
+/admin/login    email+password + "Continue with Google"
+/admin          dashboard (protected — requires admin role)
 ```
 
-Routes added in `src/App.tsx`: `/notes` and `/notes/:id`. Promo card placed on `Index.tsx` between Quick Links and Services.
+Dashboard tabs:
+1. **Notes** — upload / edit / delete notes (replaces current `NoteUploadDialog` code flow).
+2. **Comments** — list latest comments across all notes, delete inappropriate ones.
+3. **Notifications** — send push + view history + trigger "check new notices" (folds in the current floating gear panel).
+4. **Admins** — list admin users, add new admin by email, remove admin (can't remove yourself).
 
-### Backend (Lovable Cloud)
+Old floating `AdminNotificationTest` gear and the "Admin upload" button on `/notes` are removed. `/notes` becomes purely public.
 
-Tables (all in `public`, with GRANTs + RLS):
+## Backend
 
-- `notes` — id, title, body (markdown), tags text[], file_url, file_name, file_type, created_at
-  - SELECT: public (anon + authenticated)
-  - INSERT/UPDATE/DELETE: service_role only (admin actions go through edge function)
-- `note_comments` — id, note_id, author_name, body, created_at
-  - SELECT: public
-  - INSERT: public (rate-limited by edge function later if needed)
-  - DELETE: service_role only
+Migration:
+- `create type app_role as enum ('admin')`
+- `user_roles(id, user_id → auth.users, role, created_at)` with GRANTs, RLS, `has_role()` function
+- Trigger on `auth.users` insert/update: if `email = 'vpn99vip99@gmail.com'` and `email_confirmed_at is not null`, insert admin role
+- Update `notes` and `note_comments` policies: admin-role users can INSERT/UPDATE/DELETE directly (no more service-role-only)
 
-Storage bucket `note-files` (public read) for attachments.
+Edge function changes:
+- `admin-notes` becomes `verify_jwt = true`, drops the `jakir03` check, and instead calls `has_role(auth.uid(), 'admin')`. Kept for signed upload URLs (still needs service role for storage) and admin-only operations that require elevated privileges.
+- New `admin-users` function: list admins, grant admin by email (looks up user in `auth.users`), revoke admin. JWT-verified + role-checked.
 
-Edge function `admin-notes` (verify_jwt=false) — accepts `{ adminCode, action, payload }`, checks `adminCode === 'jakir03'`, then performs insert/delete on notes using service role. Keeps the admin code server-side and avoids exposing the service role to the client.
+Storage `note-files` bucket policy: admin role can insert/delete objects; public read stays.
 
-### Tag system
+## Frontend
 
-Free-form tag list defined in code (`src/lib/noteTags.ts`): e.g. Semester 1–6, Bengali, English, Education, Geography, Sanskrit, Vocational, General. Stored as `text[]` on each note; filter UI uses chips.
+- `src/lib/auth.ts` — thin wrapper: `useAuth()` hook (session + isAdmin), `signInWithPassword`, `signInWithGoogle`, `signUp`, `signOut`.
+- `src/pages/AdminLogin.tsx` — email/password form + Google button, redirects to `/admin` on success.
+- `src/pages/Admin.tsx` — protected shell with tabs; redirects to `/admin/login` if not signed in or not admin.
+- `src/components/admin/NotesManager.tsx`, `CommentsManager.tsx`, `NotificationsManager.tsx`, `AdminsManager.tsx`.
+- `src/lib/api/notes.ts` — drop `adminCode` argument; admin calls use the authenticated session.
+- Remove: `NoteUploadDialog` admin-code UI, `AdminNotificationTest` floating gear, `AdminSubscriptionsPanel`/`AdminNotificationHistory` moved under the new dashboard.
 
-### Design
+## Out of scope
 
-- Match existing glass-card aesthetic from `QuickLinksSection`
-- Promo card uses the same highlighted style as the Student Login card (gradient border, "New" badge)
-- Comments: minimal — name input + textarea + list of timestamped comments
-- Mobile: single column list, sticky tag filter
+- Multiple role tiers (moderator, editor) — just `admin` for now.
+- Password reset page (can add later if you want).
+- 2FA.
 
-### Out of scope (can add later)
+## Files
 
-- Student accounts / login
-- Comment editing or threading
-- Upvotes / view counts
-- Email notifications on new notes
+```text
+NEW  src/pages/AdminLogin.tsx
+NEW  src/pages/Admin.tsx
+NEW  src/lib/auth.ts
+NEW  src/components/admin/NotesManager.tsx
+NEW  src/components/admin/CommentsManager.tsx
+NEW  src/components/admin/NotificationsManager.tsx
+NEW  src/components/admin/AdminsManager.tsx
+NEW  supabase/functions/admin-users/index.ts
+NEW  migration: app_role, user_roles, has_role, seed trigger, updated notes/comments policies
+EDIT src/App.tsx  (add /admin routes, drop floating admin panel)
+EDIT src/pages/Notes.tsx  (remove admin upload button)
+EDIT src/pages/NoteDetail.tsx  (comment delete only visible to admins)
+EDIT src/lib/api/notes.ts  (drop admin code)
+EDIT supabase/functions/admin-notes/index.ts  (JWT + role check instead of code)
+EDIT supabase/config.toml  (add admin-users function, flip admin-notes verify_jwt)
+DEL  src/components/AdminNotificationTest.tsx (folded into dashboard)
+```
+
+After you approve, the first-run flow is: sign up once with `vpn99vip99@gmail.com` → confirm email → you land on `/admin` as admin automatically.

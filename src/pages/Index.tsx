@@ -23,9 +23,6 @@ const ContactSection = lazy(() =>
 const Footer = lazy(() =>
   import('@/components/Footer').then(m => ({ default: m.Footer }))
 );
-const AdminNotificationTest = lazy(() =>
-  import('@/components/AdminNotificationTest').then(m => ({ default: m.AdminNotificationTest }))
-);
 const PWAInstallBanner = lazy(() =>
   import('@/components/PWAInstallBanner').then(m => ({ default: m.PWAInstallBanner }))
 );
@@ -79,7 +76,6 @@ const Index = () => {
 
       {idleReady && (
         <Suspense fallback={null}>
-          <AdminNotificationTest />
           <PWAInstallBanner />
         </Suspense>
       )}
