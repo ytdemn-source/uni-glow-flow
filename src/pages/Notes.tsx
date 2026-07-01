@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, FileText, Paperclip, Trash2 } from "lucide-react";
+import { ArrowLeft, Search, FileText, Paperclip } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
-import { NoteUploadDialog } from "@/components/NoteUploadDialog";
-import { adminDeleteNote, listNotes, type Note } from "@/lib/api/notes";
+import { listNotes, type Note } from "@/lib/api/notes";
 import { NOTE_TAGS } from "@/lib/noteTags";
 import { useToast } from "@/hooks/use-toast";
 
@@ -52,17 +50,6 @@ export default function NotesPage() {
     return NOTE_TAGS.filter((t) => used.has(t));
   }, [notes]);
 
-  async function handleDelete(id: string) {
-    const code = window.prompt("Admin code to delete this note:");
-    if (!code) return;
-    try {
-      await adminDeleteNote(code, id);
-      toast({ title: "Note deleted" });
-      await refresh();
-    } catch (err) {
-      toast({ title: "Delete failed", description: (err as Error).message, variant: "destructive" });
-    }
-  }
 
   return (
     <div className="min-h-screen">
@@ -70,16 +57,13 @@ export default function NotesPage() {
       <main className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="w-4 h-4" /> Back to home
-        </Link>
+          </Link>
 
-        <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Notes & Help</h1>
-            <p className="text-muted-foreground">
-              Study notes, materials and helpful text shared for Galsi Mahavidyalaya students.
-            </p>
-          </div>
-          <NoteUploadDialog onCreated={refresh} />
+        <div className="mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Notes & Help</h1>
+          <p className="text-muted-foreground">
+            Study notes, materials and helpful text shared for Galsi Mahavidyalaya students.
+          </p>
         </div>
 
         <div className="relative mb-4">

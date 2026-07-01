@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Trash2 } from "lucide-react";
 import { addComment, adminDeleteComment, listComments, type NoteComment } from "@/lib/api/notes";
+import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
@@ -16,6 +17,7 @@ function formatDate(iso: string) {
 
 export function NoteComments({ noteId }: Props) {
   const { toast } = useToast();
+  const { isAdmin } = useAuth();
   const [comments, setComments] = useState<NoteComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState(() => localStorage.getItem("galsi_comment_name") || "");
@@ -53,10 +55,9 @@ export function NoteComments({ noteId }: Props) {
   }
 
   async function handleDelete(id: string) {
-    const code = window.prompt("Admin code to delete:");
-    if (!code) return;
+    if (!confirm("Delete this comment?")) return;
     try {
-      await adminDeleteComment(code, id);
+      await adminDeleteComment(id);
       await refresh();
     } catch (err) {
       toast({ title: "Delete failed", description: (err as Error).message, variant: "destructive" });
@@ -101,14 +102,16 @@ export function NoteComments({ noteId }: Props) {
                 <span className="font-semibold text-sm text-foreground">{c.author_name}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">{formatDate(c.created_at)}</span>
-                  <button
-                    onClick={() => handleDelete(c.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors"
-                    aria-label="Delete comment"
-                    title="Admin delete"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                      aria-label="Delete comment"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
               <p className="text-sm text-foreground/90 whitespace-pre-wrap">{c.body}</p>
