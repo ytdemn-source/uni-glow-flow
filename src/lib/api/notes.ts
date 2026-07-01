@@ -59,57 +59,64 @@ export async function getFileDownloadUrl(path: string): Promise<string | null> {
   return data.signedUrl;
 }
 
-async function callAdmin(adminCode: string, action: string, payload: unknown) {
-  const { data, error } = await supabase.functions.invoke("admin-notes", {
-    body: { adminCode, action, payload },
-  });
-  if (error) throw new Error(error.message);
-  if (data?.error) throw new Error(data.error);
-  return data;
-}
+// Admin operations — require an authenticated admin session (RLS enforces it)
 
-export async function adminCreateNote(
-  adminCode: string,
-  input: {
-    title: string;
-    body: string;
-    tags: string[];
-    file?: File | null;
-  },
-) {
+export async function adminCreateNote(input: {
+  title: string;
+  body: string;
+  tags: string[];
+  file?: File | null;
+}) {
   let file_url: string | null = null;
   let file_name: string | null = null;
   let file_type: string | null = null;
 
   if (input.file) {
-    const { path, signedUrl } = await callAdmin(adminCode, "upload-url", {
-      fileName: input.file.name,
-    });
-    const putRes = await fetch(signedUrl, {
-      method: "PUT",
-      headers: { "Content-Type": input.file.type || "application/octet-stream" },
-      body: input.file,
-    });
-    if (!putRes.ok) throw new Error("File upload failed");
+    const safe = input.file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+    const path = `${crypto.randomUUID()}-${safe}`;
+    const { error: upErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, input.file, { contentType: input.file.type || undefined });
+    if (upErr) throw upErr;
     file_url = path;
     file_name = input.file.name;
     file_type = input.file.type;
   }
 
-  return callAdmin(adminCode, "create", {
-    title: input.title,
-    body: input.body,
-    tags: input.tags,
+  const { error } = await supabase.from("notes").insert({
+    title: input.title.trim().slice(0, 200),
+    body: input.body.slice(0, 20000),
+    tags: input.tags.slice(0, 12),
     file_url,
     file_name,
     file_type,
   });
+  if (error) throw error;
 }
 
-export async function adminDeleteNote(adminCode: string, id: string) {
-  return callAdmin(adminCode, "delete", { id });
+export async function adminDeleteNote(id: string) {
+  const { data: note } = await supabase.from("notes").select("file_url").eq("id", id).maybeSingle();
+  if (note?.file_url) {
+    await supabase.storage.from(BUCKET).remove([note.file_url]);
+  }
+  const { error } = await supabase.from("notes").delete().eq("id", id);
+  if (error) throw error;
 }
 
-export async function adminDeleteComment(adminCode: string, id: string) {
-  return callAdmin(adminCode, "delete-comment", { id });
+export async function adminDeleteComment(id: string) {
+  const { error } = await supabase.from("note_comments").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function adminListRecentComments(limit = 50): Promise<(NoteComment & { note_title?: string })[]> {
+  const { data, error } = await supabase
+    .from("note_comments")
+    .select("*, notes(title)")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []).map((c: NoteComment & { notes?: { title?: string } }) => ({
+    ...c,
+    note_title: c.notes?.title,
+  }));
 }
