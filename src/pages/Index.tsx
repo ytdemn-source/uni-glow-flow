@@ -3,6 +3,7 @@ import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
 import { NotesPromoCard } from '@/components/NotesPromoCard';
+import { BroadcastsPreview } from '@/components/BroadcastsPreview';
 
 // Below-the-fold — lazy loaded so the initial bundle stays small
 const BackgroundImage = lazy(() =>
@@ -57,14 +58,15 @@ const Index = () => {
 
       <main>
         <Hero />
+        <BroadcastsPreview />
+        <section className="container mx-auto px-4 pt-4 md:pt-6">
+          <NotesPromoCard />
+        </section>
         <NoticesSection />
 
         <Suspense fallback={null}>
           <DepartmentsSection />
           <QuickLinksSection />
-          <section className="container mx-auto px-4 py-8 md:py-12">
-            <NotesPromoCard />
-          </section>
           <ServicesSection />
           <ContactSection />
         </Suspense>

@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      broadcasts: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          title: string
+          url: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title: string
+          url?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       note_comments: {
         Row: {
           author_name: string
