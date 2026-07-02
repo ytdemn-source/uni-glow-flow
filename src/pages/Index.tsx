@@ -4,6 +4,8 @@ import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
 import { NotesPromoCard } from '@/components/NotesPromoCard';
 import { BroadcastsPreview } from '@/components/BroadcastsPreview';
+import { AdSlot } from '@/components/AdSlot';
+
 
 // Below-the-fold — lazy loaded so the initial bundle stays small
 const BackgroundImage = lazy(() =>
@@ -62,7 +64,11 @@ const Index = () => {
         <section className="container mx-auto px-4 pt-4 md:pt-6">
           <NotesPromoCard />
         </section>
+        <section className="container mx-auto px-4">
+          <AdSlot />
+        </section>
         <NoticesSection />
+
 
         <Suspense fallback={null}>
           <DepartmentsSection />
