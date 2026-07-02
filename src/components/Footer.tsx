@@ -1,5 +1,7 @@
 import { Heart, ExternalLink, AlertTriangle, Rss } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { AdSlot } from '@/components/AdSlot';
+
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -7,7 +9,9 @@ export function Footer() {
   return (
     <footer className="py-12 glass-card rounded-none border-x-0 border-b-0">
       <div className="container mx-auto px-4">
+        <AdSlot />
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+
           {/* Logo & Tagline */}
           <div className="flex items-center gap-3">
             <img 
