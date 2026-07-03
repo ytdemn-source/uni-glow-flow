@@ -1,4 +1,5 @@
-import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark, Rss } from 'lucide-react';
+import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark, Rss, Bell, Megaphone, School } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { NoticeCard } from './NoticeCard';
 import { NoticeSearch } from './NoticeSearch';
 import { NoticeCategoryFilter } from './NoticeCategoryFilter';
@@ -7,12 +8,14 @@ import { Skeleton } from './ui/skeleton';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useQuery } from '@tanstack/react-query';
 import { noticesApi, Notice } from '@/lib/api/notices';
+import { listBroadcasts } from '@/lib/api/broadcasts';
 import { useToast } from '@/hooks/use-toast';
 import { NotificationSubscribe } from './NotificationSubscribe';
 import { useState, useEffect, useMemo } from 'react';
 import { fuzzySearch } from '@/lib/fuzzySearch';
 import { BookmarksPanel } from './BookmarksPanel';
 import { useBookmarks } from '@/hooks/useBookmarks';
+
 
 function NoticeCardSkeleton({ index }: { index: number }) {
   return (
