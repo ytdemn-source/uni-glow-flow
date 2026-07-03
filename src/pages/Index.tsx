@@ -3,7 +3,6 @@ import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
 import { NotesPromoCard } from '@/components/NotesPromoCard';
-import { BroadcastsPreview } from '@/components/BroadcastsPreview';
 import { AdSlot } from '@/components/AdSlot';
 
 
