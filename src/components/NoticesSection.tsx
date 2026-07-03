@@ -386,7 +386,7 @@ export function NoticesSection() {
           {/* Notices Grid */}
           {!isLoading && filteredNotices.length > 0 && (
             <div className={`space-y-3 md:space-y-4 mb-6 md:mb-8 stagger-children ${isVisible ? 'visible' : ''}`}>
-              {filteredNotices.slice(0, 10).map((notice, index) => (
+              {filteredNotices.map((notice, index) => (
                 <NoticeCard key={notice.id} notice={notice} index={index} />
               ))}
             </div>
