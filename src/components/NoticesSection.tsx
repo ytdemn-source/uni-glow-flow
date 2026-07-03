@@ -1,4 +1,5 @@
-import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark, Rss } from 'lucide-react';
+import { ArrowRight, RefreshCw, Loader2, Clock, Radio, SearchX, WifiOff, AlertCircle, Inbox, Sparkles, Bookmark, Rss, Bell, Megaphone, School } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { NoticeCard } from './NoticeCard';
 import { NoticeSearch } from './NoticeSearch';
 import { NoticeCategoryFilter } from './NoticeCategoryFilter';
@@ -7,12 +8,14 @@ import { Skeleton } from './ui/skeleton';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useQuery } from '@tanstack/react-query';
 import { noticesApi, Notice } from '@/lib/api/notices';
+import { listBroadcasts } from '@/lib/api/broadcasts';
 import { useToast } from '@/hooks/use-toast';
 import { NotificationSubscribe } from './NotificationSubscribe';
 import { useState, useEffect, useMemo } from 'react';
 import { fuzzySearch } from '@/lib/fuzzySearch';
 import { BookmarksPanel } from './BookmarksPanel';
 import { useBookmarks } from '@/hooks/useBookmarks';
+
 
 function NoticeCardSkeleton({ index }: { index: number }) {
   return (
@@ -83,7 +86,9 @@ export function NoticesSection() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [cachedNotices] = useState<Notice[] | null>(() => loadCachedNotices());
   const [bookmarksPanelOpen, setBookmarksPanelOpen] = useState(false);
+  const [source, setSource] = useState<'college' | 'admin'>('college');
   const { bookmarks } = useBookmarks();
+
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -121,6 +126,14 @@ export function NoticesSection() {
     refetchOnWindowFocus: true, // Refresh when user comes back to the tab
     retry: 2,
   });
+
+  const { data: broadcasts = [], isLoading: broadcastsLoading } = useQuery({
+    queryKey: ['broadcasts', 'notices-section'],
+    queryFn: () => listBroadcasts(50),
+    staleTime: 60_000,
+    enabled: source === 'admin',
+  });
+
 
   useEffect(() => {
     if (dataUpdatedAt) {
@@ -296,25 +309,60 @@ export function NoticesSection() {
                   </Button>
                 </div>
               </div>
-              
-              {/* Search Bar */}
-              <div className="flex items-center gap-3 flex-wrap">
-                <NoticeSearch value={searchQuery} onChange={setSearchQuery} />
-                {searchQuery && (
-                  <span className="text-xs text-muted-foreground">
-                    {filteredNotices.length} result{filteredNotices.length !== 1 ? 's' : ''}
-                    {isFuzzyMatch && (
-                      <span className="ml-1.5 inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
-                        <Sparkles className="w-3 h-3" />
-                        closest matches
-                      </span>
-                    )}
-                  </span>
-                )}
+
+              {/* Source Toggle */}
+              <div className="inline-flex items-center p-1 rounded-full bg-muted/60 border border-border/50 self-start">
+                <button
+                  type="button"
+                  onClick={() => setSource('college')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'college'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <School className="w-3.5 h-3.5" />
+                  College Notices
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSource('admin')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'admin'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Megaphone className="w-3.5 h-3.5" />
+                  Admin Notices
+                  {broadcasts.length > 0 && source !== 'admin' && (
+                    <span className="ml-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+                      {broadcasts.length}
+                    </span>
+                  )}
+                </button>
               </div>
-              
+
+              {/* Search Bar (college only) */}
+              {source === 'college' && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <NoticeSearch value={searchQuery} onChange={setSearchQuery} />
+                  {searchQuery && (
+                    <span className="text-xs text-muted-foreground">
+                      {filteredNotices.length} result{filteredNotices.length !== 1 ? 's' : ''}
+                      {isFuzzyMatch && (
+                        <span className="ml-1.5 inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                          <Sparkles className="w-3 h-3" />
+                          closest matches
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {/* Category Filter */}
-              {notices.length > 0 && (
+              {source === 'college' && notices.length > 0 && (
                 <NoticeCategoryFilter
                   selectedCategory={selectedCategory}
                   onCategoryChange={setSelectedCategory}
@@ -324,83 +372,158 @@ export function NoticesSection() {
             </div>
           </div>
 
-          {/* Offline State */}
-          {!isOnline && notices.length === 0 && (
-            <div className="glass-card p-8 md:p-12 text-center">
-              <WifiOff className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">You're offline</h3>
-              <p className="text-sm text-muted-foreground">
-                Connect to the internet to view the latest notices.
-              </p>
-            </div>
+
+          {source === 'college' && (
+            <>
+              {/* Offline State */}
+              {!isOnline && notices.length === 0 && (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <WifiOff className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">You're offline</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Connect to the internet to view the latest notices.
+                  </p>
+                </div>
+              )}
+
+              {/* Error State */}
+              {isError && !isLoading && notices.length === 0 && (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Failed to fetch updates</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {error instanceof Error ? error.message : 'Please try again later.'}
+                  </p>
+                  <Button variant="outline" size="sm" onClick={() => refetch()}>
+                    Try again
+                  </Button>
+                </div>
+              )}
+
+              {/* Loading State - Skeleton Cards */}
+              {isLoading && notices.length === 0 && (
+                <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <NoticeCardSkeleton key={index} index={index} />
+                  ))}
+                </div>
+              )}
+
+              {/* Empty State */}
+              {!isLoading && !isError && notices.length === 0 && isOnline && (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <Inbox className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No notices available</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Check back later for new announcements.
+                  </p>
+                </div>
+              )}
+
+              {/* No Results State */}
+              {!isLoading && (searchQuery || selectedCategory) && filteredNotices.length === 0 && notices.length > 0 && (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <SearchX className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No notices found</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {searchQuery ? `No notices match "${searchQuery}".` : 'No notices in this category.'}
+                  </p>
+                  <Button variant="outline" size="sm" onClick={() => { setSearchQuery(''); setSelectedCategory(null); }}>
+                    Clear filters
+                  </Button>
+                </div>
+              )}
+
+              {/* Notices Grid */}
+              {!isLoading && filteredNotices.length > 0 && (
+                <div className={`space-y-3 md:space-y-4 mb-6 md:mb-8 stagger-children ${isVisible ? 'visible' : ''}`}>
+                  {filteredNotices.map((notice, index) => (
+                    <NoticeCard key={notice.id} notice={notice} index={index} />
+                  ))}
+                </div>
+              )}
+
+              {/* View All Link */}
+              <div className="text-center">
+                <Button variant="ghost" size="sm" className="gap-2 group text-sm md:text-base" asChild>
+                  <a href="https://galsimahavidyalaya.ac.in/category/notice/" target="_blank" rel="noopener noreferrer">
+                    View All on Official Website
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </a>
+                </Button>
+              </div>
+            </>
           )}
 
-          {/* Error State */}
-          {isError && !isLoading && notices.length === 0 && (
-            <div className="glass-card p-8 md:p-12 text-center">
-              <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Failed to fetch updates</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                {error instanceof Error ? error.message : 'Please try again later.'}
-              </p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
-                Try again
-              </Button>
-            </div>
+          {source === 'admin' && (
+            <>
+              {broadcastsLoading && broadcasts.length === 0 && (
+                <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                  {[0, 1, 2].map((i) => (
+                    <NoticeCardSkeleton key={i} index={i} />
+                  ))}
+                </div>
+              )}
+
+              {!broadcastsLoading && broadcasts.length === 0 && (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <Bell className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No admin notices yet</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Announcements from the GS Hub admin team will appear here.
+                  </p>
+                </div>
+              )}
+
+              {broadcasts.length > 0 && (
+                <div className={`space-y-3 md:space-y-4 mb-6 md:mb-8 stagger-children ${isVisible ? 'visible' : ''}`}>
+                  {broadcasts.map((b) => (
+                    <div key={b.id} className="glass-card-elevated p-5 md:p-6">
+                      <div className="flex items-start gap-3 md:gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center flex-shrink-0">
+                          <Megaphone className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wide">
+                              Admin
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(b.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
+                          <h3 className="font-semibold text-foreground mb-1">{b.title}</h3>
+                          {b.body && (
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{b.body}</p>
+                          )}
+                          {b.url && (
+                            <a
+                              href={b.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs font-semibold text-primary mt-2 hover:underline"
+                            >
+                              Open link <ArrowRight className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="text-center">
+                <Button variant="ghost" size="sm" className="gap-2 group text-sm md:text-base" asChild>
+                  <Link to="/notifications">
+                    View all notifications
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </Button>
+              </div>
+            </>
           )}
 
-          {/* Loading State - Skeleton Cards */}
-          {isLoading && notices.length === 0 && (
-            <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-              {[0, 1, 2, 3, 4].map((index) => (
-                <NoticeCardSkeleton key={index} index={index} />
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!isLoading && !isError && notices.length === 0 && isOnline && (
-            <div className="glass-card p-8 md:p-12 text-center">
-              <Inbox className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No notices available</h3>
-              <p className="text-sm text-muted-foreground">
-                Check back later for new announcements.
-              </p>
-            </div>
-          )}
-
-          {/* No Results State */}
-          {!isLoading && (searchQuery || selectedCategory) && filteredNotices.length === 0 && notices.length > 0 && (
-            <div className="glass-card p-8 md:p-12 text-center">
-              <SearchX className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No notices found</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                {searchQuery ? `No notices match "${searchQuery}".` : 'No notices in this category.'}
-              </p>
-              <Button variant="outline" size="sm" onClick={() => { setSearchQuery(''); setSelectedCategory(null); }}>
-                Clear filters
-              </Button>
-            </div>
-          )}
-
-          {/* Notices Grid */}
-          {!isLoading && filteredNotices.length > 0 && (
-            <div className={`space-y-3 md:space-y-4 mb-6 md:mb-8 stagger-children ${isVisible ? 'visible' : ''}`}>
-              {filteredNotices.map((notice, index) => (
-                <NoticeCard key={notice.id} notice={notice} index={index} />
-              ))}
-            </div>
-          )}
-
-          {/* View All Link */}
-          <div className="text-center">
-            <Button variant="ghost" size="sm" className="gap-2 group text-sm md:text-base" asChild>
-              <a href="https://galsimahavidyalaya.ac.in/category/notice/" target="_blank" rel="noopener noreferrer">
-                View All on Official Website
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </a>
-            </Button>
-          </div>
         </div>
       </div>
       <BookmarksPanel open={bookmarksPanelOpen} onOpenChange={setBookmarksPanelOpen} />

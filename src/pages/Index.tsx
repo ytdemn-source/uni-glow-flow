@@ -3,7 +3,6 @@ import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
 import { NotesPromoCard } from '@/components/NotesPromoCard';
-import { BroadcastsPreview } from '@/components/BroadcastsPreview';
 import { AdSlot } from '@/components/AdSlot';
 
 
@@ -60,7 +59,7 @@ const Index = () => {
 
       <main>
         <Hero />
-        <BroadcastsPreview />
+        
         <section className="container mx-auto px-4 pt-4 md:pt-6">
           <NotesPromoCard />
         </section>
