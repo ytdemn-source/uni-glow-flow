@@ -309,25 +309,60 @@ export function NoticesSection() {
                   </Button>
                 </div>
               </div>
-              
-              {/* Search Bar */}
-              <div className="flex items-center gap-3 flex-wrap">
-                <NoticeSearch value={searchQuery} onChange={setSearchQuery} />
-                {searchQuery && (
-                  <span className="text-xs text-muted-foreground">
-                    {filteredNotices.length} result{filteredNotices.length !== 1 ? 's' : ''}
-                    {isFuzzyMatch && (
-                      <span className="ml-1.5 inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
-                        <Sparkles className="w-3 h-3" />
-                        closest matches
-                      </span>
-                    )}
-                  </span>
-                )}
+
+              {/* Source Toggle */}
+              <div className="inline-flex items-center p-1 rounded-full bg-muted/60 border border-border/50 self-start">
+                <button
+                  type="button"
+                  onClick={() => setSource('college')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'college'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <School className="w-3.5 h-3.5" />
+                  College Notices
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSource('admin')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'admin'
+                      ? 'bg-background shadow-sm text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Megaphone className="w-3.5 h-3.5" />
+                  Admin Notices
+                  {broadcasts.length > 0 && source !== 'admin' && (
+                    <span className="ml-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+                      {broadcasts.length}
+                    </span>
+                  )}
+                </button>
               </div>
-              
+
+              {/* Search Bar (college only) */}
+              {source === 'college' && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <NoticeSearch value={searchQuery} onChange={setSearchQuery} />
+                  {searchQuery && (
+                    <span className="text-xs text-muted-foreground">
+                      {filteredNotices.length} result{filteredNotices.length !== 1 ? 's' : ''}
+                      {isFuzzyMatch && (
+                        <span className="ml-1.5 inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                          <Sparkles className="w-3 h-3" />
+                          closest matches
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {/* Category Filter */}
-              {notices.length > 0 && (
+              {source === 'college' && notices.length > 0 && (
                 <NoticeCategoryFilter
                   selectedCategory={selectedCategory}
                   onCategoryChange={setSelectedCategory}
@@ -336,6 +371,7 @@ export function NoticesSection() {
               )}
             </div>
           </div>
+
 
           {/* Offline State */}
           {!isOnline && notices.length === 0 && (
