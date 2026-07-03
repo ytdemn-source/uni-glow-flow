@@ -59,7 +59,7 @@ const Index = () => {
 
       <main>
         <Hero />
-        <BroadcastsPreview />
+        
         <section className="container mx-auto px-4 pt-4 md:pt-6">
           <NotesPromoCard />
         </section>
