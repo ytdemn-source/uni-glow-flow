@@ -86,7 +86,9 @@ export function NoticesSection() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [cachedNotices] = useState<Notice[] | null>(() => loadCachedNotices());
   const [bookmarksPanelOpen, setBookmarksPanelOpen] = useState(false);
+  const [source, setSource] = useState<'college' | 'admin'>('college');
   const { bookmarks } = useBookmarks();
+
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
