@@ -127,6 +127,14 @@ export function NoticesSection() {
     retry: 2,
   });
 
+  const { data: broadcasts = [], isLoading: broadcastsLoading } = useQuery({
+    queryKey: ['broadcasts', 'notices-section'],
+    queryFn: () => listBroadcasts(50),
+    staleTime: 60_000,
+    enabled: source === 'admin',
+  });
+
+
   useEffect(() => {
     if (dataUpdatedAt) {
       setLastRefreshed(new Date(dataUpdatedAt));
