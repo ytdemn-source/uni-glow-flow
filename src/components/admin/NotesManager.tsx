@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { NOTE_TAGS } from "@/lib/noteTags";
 import { adminCreateNote, adminDeleteNote, listNotes, type Note } from "@/lib/api/notes";
+import { adminCreateBroadcast } from "@/lib/api/broadcasts";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 export function NotesManager() {
@@ -18,6 +21,8 @@ export function NotesManager() {
   const [body, setBody] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const [notify, setNotify] = useState(true);
+  const [alsoPush, setAlsoPush] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   async function refresh() {
@@ -41,7 +46,28 @@ export function NotesManager() {
     setSubmitting(true);
     try {
       await adminCreateNote({ title, body, tags, file });
-      toast({ title: "Note published" });
+
+      let notifySummary = "";
+      if (notify) {
+        const notifTitle = `New note: ${title.trim().slice(0, 140)}`;
+        const notifBody = body.trim().slice(0, 300) || "A new note has been published.";
+        try {
+          await adminCreateBroadcast({ title: notifTitle, body: notifBody, url: "/notes" });
+        } catch (err) {
+          console.error("broadcast failed", err);
+        }
+        if (alsoPush) {
+          const { data, error } = await supabase.functions.invoke("send-notification", {
+            body: { title: notifTitle, body: notifBody, url: "/notes" },
+          });
+          if (error) throw error;
+          notifySummary = ` · ${data?.sent ?? 0} push delivered`;
+        } else {
+          notifySummary = " · announcement posted";
+        }
+      }
+
+      toast({ title: "Note published", description: notifySummary || undefined });
       setTitle(""); setBody(""); setTags([]); setFile(null);
       setOpen(false);
       refresh();
@@ -101,6 +127,22 @@ export function NotesManager() {
                 <Label htmlFor="f">Attachment (PDF/image, ≤10 MB)</Label>
                 <Input id="f" type="file" accept="application/pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
               </div>
+
+              <div className="space-y-2 rounded-lg border border-border/50 p-3">
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox checked={notify} onCheckedChange={(v) => setNotify(Boolean(v))} />
+                  Post announcement about this note
+                </label>
+                <label className={`flex items-center gap-2 text-sm ${!notify ? "opacity-50" : ""}`}>
+                  <Checkbox
+                    checked={notify && alsoPush}
+                    disabled={!notify}
+                    onCheckedChange={(v) => setAlsoPush(Boolean(v))}
+                  />
+                  Also send push notification to subscribers
+                </label>
+              </div>
+
               <Button type="submit" disabled={submitting} className="w-full">
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                 Publish
