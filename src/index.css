@@ -177,10 +177,7 @@
   /* Blurred background container */
   .bg-campus {
     @apply fixed inset-0 -z-10;
-    background-image: url('@/assets/campus-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: linear-gradient(180deg, hsl(180 20% 98%) 0%, hsl(200 30% 94%) 100%);
   }
 
   .bg-campus::after {
@@ -193,6 +190,7 @@
       hsl(180 20% 98% / 0.95) 100%
     );
   }
+
 
   /* Heavy backdrop blur only on tablet+ — saves GPU on phones */
   @media (min-width: 768px) {

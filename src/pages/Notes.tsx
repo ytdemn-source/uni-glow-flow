@@ -62,9 +62,10 @@ export default function NotesPage() {
         <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Notes & Help</h1>
           <p className="text-muted-foreground">
-            Study notes, materials and helpful text shared for Galsi Mahavidyalaya students.
+            Study notes, materials and helpful text shared by other students.
           </p>
         </div>
+
 
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
