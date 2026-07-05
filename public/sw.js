@@ -1,4 +1,4 @@
-// Service Worker for Push Notifications + Auto-Update — GS Hub
+// Service Worker for Push Notifications + Auto-Update — A Help Deck
 // IMPORTANT: bump CACHE_VERSION whenever you ship breaking SW changes.
 const CACHE_VERSION = 'v3';
 const CACHE_NAME = `gs-hub-cache-${CACHE_VERSION}`;
@@ -40,8 +40,9 @@ self.addEventListener('message', function (event) {
 // ---------- Push notifications ----------
 self.addEventListener('push', function (event) {
   let data = {
-    title: 'GS Hub - Galsi Student Hub',
-    body: 'New notice posted!',
+    title: 'A Help Deck',
+    body: 'New announcement posted!',
+
     icon: '/logo-192.png',
     badge: '/logo-192.png',
     url: '/#notices',
@@ -69,7 +70,7 @@ self.addEventListener('push', function (event) {
       { action: 'open', title: actionTitle },
       { action: 'close', title: 'Dismiss' },
     ],
-    tag: 'galsi-notice-' + Date.now(),
+    tag: 'ahd-notice-' + Date.now(),
     renotify: true,
     requireInteraction: true,
   };

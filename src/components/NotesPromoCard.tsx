@@ -19,7 +19,8 @@ export function NotesPromoCard() {
             Notes & Help Library
           </h3>
           <p className="text-sm text-muted-foreground mb-3">
-            Browse subject notes, study materials and helpful text shared for Galsi students. Open any note to download files or join the discussion.
+            Browse subject notes and study materials shared by other students.
+            Open any note to download files or join the discussion.
           </p>
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
             Open library <ArrowRight className="w-4 h-4" />

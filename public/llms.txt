@@ -1,19 +1,16 @@
-# Galsi College Student Hub (GS Hub) — Galsi Mahavidyalaya
+# A Help Deck — Student Helper
 
-> Unofficial student hub for Galsi Mahavidyalaya (Galsi College), Purba Bardhaman, West Bengal. The fastest way to get Galsi College notices, results, syllabus, admission info, and department details. NAAC 'B' accredited, affiliated to The University of Burdwan. Built by Jakir.
-
-GS Hub (also called Galsi Student Hub or Galsi College Student Hub) is a Progressive Web App for students of Galsi Mahavidyalaya (গলসী মহাবিদ্যালয়). It aggregates official college notices, exam results, admission information, department details, and quick links to university and government services. Users can bookmark notices, subscribe to push notifications for new updates, and install the app to their home screen.
+> A Help Deck is an independent, community-run student helper app. It lets students read admin announcements, browse and share subject notes, and reach free public study tools and portals in one place. Not affiliated with any college, university, or government body.
 
 ## Pages
 
-- [Home](/): Galsi College notices, results, syllabus, departments, quick links, services and contact info for Galsi Mahavidyalaya.
+- [Home](/): Announcements, notes library, subject directory, quick links to free study portals, and study tools.
+- [Notes](/notes): Shared subject notes and study material.
+- [Notifications](/notifications): Full history of admin announcements.
 
 ## Topics covered
 
-- Galsi College notices and circulars from Galsi Mahavidyalaya
-- Galsi College admission information (UG admissions 2025-26, NEP 2020, CBCS, WBCAP portal)
-- Galsi College results and University of Burdwan exam updates
-- Galsi College syllabus and Burdwan University curriculum PDFs
-- Departments: Bengali, English, History, Political Science, Sanskrit, Philosophy, Education, Geography, Mathematics, Physics, Chemistry, Botany, Zoology, Computer Science, Physical Education, Vocational Retail & Sales
-- Important links: University of Burdwan, WBCHSE, UGC, Banglar Uchchashiksha portal
-- Built and maintained by Jakir
+- Admin-posted announcements and updates for students
+- Shared subject notes across common undergraduate subjects (Bengali, English, History, Geography, Sanskrit, Philosophy, Political Science, Environmental Studies)
+- Free public study platforms: SWAYAM, NPTEL, National Digital Library, DigiLocker, National Scholarship Portal, e-PG Pathshala
+- Study tools: CGPA calculator, Pomodoro timer, bookmarking

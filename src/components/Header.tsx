@@ -5,11 +5,11 @@ import { ThemeToggle } from './ThemeToggle';
 import logo from '@/assets/logo.png';
 
 const navLinks = [
-  { label: 'Notices', href: '#notices' },
+  { label: 'Announcements', href: '#notices' },
   { label: 'Quick Links', href: '#quick-links' },
-  { label: 'Departments', href: '#departments' },
-  { label: 'Services', href: '#services' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Subjects', href: '#departments' },
+  { label: 'Study Tools', href: '#services' },
+  { label: 'Feedback', href: '#contact' },
 ];
 
 export function Header() {
@@ -41,22 +41,21 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           <a href="#" className="flex items-center gap-3 group">
-            <img 
-              src={logo} 
-              alt="GS Hub Logo" 
-              className="w-16 h-16 md:w-20 md:h-20 object-contain"
+            <img
+              src={logo}
+              alt="A Help Deck logo"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain"
             />
             <div className="hidden sm:block">
               <span className="font-bold text-lg text-foreground leading-tight block">
-                GS Hub
+                A Help Deck
               </span>
               <span className="text-xs text-muted-foreground">
-                Galsi Student Hub
+                Your study companion
               </span>
             </div>
           </a>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
@@ -72,7 +71,6 @@ export function Header() {
             </div>
           </nav>
 
-          {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
             <Button
@@ -80,16 +78,11 @@ export function Header() {
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation with smooth transition */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${
             isMobileMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'

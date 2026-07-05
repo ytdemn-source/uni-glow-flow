@@ -1,9 +1,10 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
-const PAGE_TITLE = "Page Not Found (404) | GS Hub";
+const PAGE_TITLE = "Page Not Found (404) | A Help Deck";
 const PAGE_DESCRIPTION =
-  "The page you're looking for doesn't exist on GS Hub. Return to the Galsi College Student Hub home page.";
+  "The page you're looking for doesn't exist. Return to the A Help Deck home page.";
+
 const CANONICAL = "https://uni-glow-flow.lovable.app/404";
 
 function setMeta(selector: string, attr: string, value: string) {
