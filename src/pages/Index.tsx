@@ -5,8 +5,6 @@ import { NoticesSection } from '@/components/NoticesSection';
 import { NotesPromoCard } from '@/components/NotesPromoCard';
 import { AdSlot } from '@/components/AdSlot';
 
-
-// Below-the-fold — lazy loaded so the initial bundle stays small
 const BackgroundImage = lazy(() =>
   import('@/components/BackgroundImage').then(m => ({ default: m.BackgroundImage }))
 );
@@ -29,7 +27,6 @@ const PWAInstallBanner = lazy(() =>
   import('@/components/PWAInstallBanner').then(m => ({ default: m.PWAInstallBanner }))
 );
 
-/** Defer non-critical UI until the browser is idle. */
 function useIdleMount(delay = 1500) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -59,7 +56,7 @@ const Index = () => {
 
       <main>
         <Hero />
-        
+
         <section className="container mx-auto px-4 pt-4 md:pt-6">
           <NotesPromoCard />
         </section>
@@ -67,7 +64,6 @@ const Index = () => {
           <AdSlot />
         </section>
         <NoticesSection />
-
 
         <Suspense fallback={null}>
           <DepartmentsSection />
