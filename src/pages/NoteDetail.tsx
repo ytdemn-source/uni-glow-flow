@@ -23,7 +23,7 @@ export default function NoteDetailPage() {
       try {
         const n = await getNote(id);
         setNote(n);
-        document.title = n ? `${n.title} — GS Hub` : "Note — GS Hub";
+        document.title = n ? `${n.title} — A Help Deck` : "Note — A Help Deck";
       } finally {
         setLoading(false);
       }

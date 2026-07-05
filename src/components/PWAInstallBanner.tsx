@@ -25,7 +25,7 @@ export function PWAInstallBanner() {
           <div className="flex-1 min-w-0">
             {canInstall ? (
               <>
-                <p className="text-sm font-semibold text-foreground">Install GS Hub</p>
+                <p className="text-sm font-semibold text-foreground">Install A Help Deck</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Add to your home screen for quick access to notices anytime.
                 </p>
@@ -39,7 +39,7 @@ export function PWAInstallBanner() {
               </>
             ) : isIOSDevice ? (
               <>
-                <p className="text-sm font-semibold text-foreground">Install GS Hub</p>
+                <p className="text-sm font-semibold text-foreground">Install A Help Deck</p>
                 <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                   Tap the{' '}
                   <Share className="w-3 h-3 inline-block align-middle" />

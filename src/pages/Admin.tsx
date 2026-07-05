@@ -15,7 +15,7 @@ export default function AdminPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Admin dashboard — GS Hub";
+    document.title = "Admin dashboard — A Help Deck";
   }, []);
 
   useEffect(() => {

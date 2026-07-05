@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    document.title = "Admin sign in — GS Hub";
+    document.title = "Admin sign in — A Help Deck";
   }, []);
 
   useEffect(() => {

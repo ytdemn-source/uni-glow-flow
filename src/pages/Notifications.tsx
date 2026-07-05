@@ -20,7 +20,7 @@ function timeAgo(iso: string) {
 
 export default function NotificationsPage() {
   useEffect(() => {
-    document.title = "Notifications — GS Hub";
+    document.title = "Notifications — A Help Deck";
   }, []);
 
   const { data, isLoading, isError } = useQuery({
@@ -42,7 +42,7 @@ export default function NotificationsPage() {
               <Bell className="w-6 h-6 text-primary" /> Notifications
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Announcements and updates broadcast by GS Hub admins.
+              Announcements and updates broadcast by A Help Deck admins.
             </p>
           </div>
           <NotificationSubscribe />

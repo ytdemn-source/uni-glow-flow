@@ -30,7 +30,7 @@ export default function NotesPage() {
   }
 
   useEffect(() => {
-    document.title = "Notes & Help — GS Hub";
+    document.title = "Notes & Help — A Help Deck";
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

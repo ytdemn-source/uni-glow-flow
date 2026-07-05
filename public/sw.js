@@ -1,4 +1,4 @@
-// Service Worker for Push Notifications + Auto-Update — GS Hub
+// Service Worker for Push Notifications + Auto-Update — A Help Deck
 // IMPORTANT: bump CACHE_VERSION whenever you ship breaking SW changes.
 const CACHE_VERSION = 'v3';
 const CACHE_NAME = `gs-hub-cache-${CACHE_VERSION}`;
