@@ -66,11 +66,11 @@ export function NoticesSection() {
   }, [collegeNotices]);
 
   const filteredCollege = useMemo(() => {
-    return collegeNotices.filter((n) => {
-      if (category && (n.category || 'general') !== category) return false;
-      if (search.trim() && !fuzzyMatch(n.title, search)) return false;
-      return true;
-    });
+    const byCategory = category
+      ? collegeNotices.filter((n) => (n.category || 'general') === category)
+      : collegeNotices;
+    if (!search.trim()) return byCategory;
+    return fuzzySearch(byCategory, search, (n) => n.title).map((r) => r.item);
   }, [collegeNotices, category, search]);
 
   return (
