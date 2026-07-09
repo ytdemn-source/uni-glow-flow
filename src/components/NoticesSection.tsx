@@ -11,7 +11,7 @@ import { NotificationSubscribe } from './NotificationSubscribe';
 import { NoticeCard } from './NoticeCard';
 import { NoticeSearch } from './NoticeSearch';
 import { NoticeCategoryFilter } from './NoticeCategoryFilter';
-import { fuzzyMatch } from '@/lib/fuzzySearch';
+import { fuzzySearch } from '@/lib/fuzzySearch';
 
 function RowSkeleton({ index }: { index: number }) {
   return (
