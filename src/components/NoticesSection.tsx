@@ -1,4 +1,4 @@
-import { Clock, Radio, Inbox, ExternalLink, Megaphone, RefreshCw, School } from 'lucide-react';
+import { Clock, Radio, Inbox, ExternalLink, Megaphone, RefreshCw, School, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { Button } from './ui/button';
@@ -27,7 +27,7 @@ function RowSkeleton({ index }: { index: number }) {
   );
 }
 
-type Source = 'college' | 'admin';
+type Source = 'college' | 'university' | 'admin';
 
 export function NoticesSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
@@ -48,6 +48,20 @@ export function NoticesSection() {
   });
 
   const collegeNotices = collegeData?.notices ?? [];
+
+  const {
+    data: buData,
+    isLoading: buLoading,
+    refetch: refetchBU,
+    isRefetching: buRefetching,
+  } = useQuery({
+    queryKey: ['bu-notices'],
+    queryFn: () => noticesApi.fetchBUNotices(),
+    staleTime: 10 * 60_000,
+    enabled: source === 'university',
+  });
+
+  const buNotices = buData?.notices ?? [];
 
   const { data: broadcasts = [], isLoading: adminLoading } = useQuery({
     queryKey: ['broadcasts', 'notices-section'],
@@ -72,6 +86,11 @@ export function NoticesSection() {
     if (!search.trim()) return byCategory;
     return fuzzySearch(byCategory, search, (n) => n.title).map((r) => r.item);
   }, [collegeNotices, category, search]);
+
+  const filteredBU = useMemo(() => {
+    if (!search.trim()) return buNotices;
+    return fuzzySearch(buNotices, search, (n) => n.title).map((r) => r.item);
+  }, [buNotices, search]);
 
   return (
     <section id="notices" className="pt-4 pb-16 md:py-24 relative" ref={ref}>
@@ -125,6 +144,17 @@ export function NoticesSection() {
                   College notices
                 </button>
                 <button
+                  onClick={() => setSource('university')}
+                  className={`inline-flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'university'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  University (Arts)
+                </button>
+                <button
                   onClick={() => setSource('admin')}
                   className={`inline-flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
                     source === 'admin'
@@ -145,6 +175,18 @@ export function NoticesSection() {
                   className="gap-1.5"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${collegeRefetching ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline text-xs">Refresh</span>
+                </Button>
+              )}
+              {source === 'university' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refetchBU()}
+                  disabled={buRefetching}
+                  className="gap-1.5"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${buRefetching ? 'animate-spin' : ''}`} />
                   <span className="hidden sm:inline text-xs">Refresh</span>
                 </Button>
               )}
@@ -199,6 +241,51 @@ export function NoticesSection() {
               )}
             </>
           )}
+
+          {/* University (Arts) source */}
+          {source === 'university' && (
+            <>
+              <div className="mb-4">
+                <NoticeSearch value={search} onChange={setSearch} />
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Filtered from the University of Burdwan — arts, commerce, law & universal notices only.
+              </p>
+              {buLoading && buNotices.length === 0 ? (
+                <div className="space-y-3 md:space-y-4">
+                  {[0, 1, 2, 3].map((i) => (
+                    <RowSkeleton key={i} index={i} />
+                  ))}
+                </div>
+              ) : buData && !buData.success ? (
+                <div className="glass-card p-8 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Couldn't load university notices right now.
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => refetchBU()}>
+                    Try again
+                  </Button>
+                </div>
+              ) : filteredBU.length === 0 ? (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <Inbox className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    No university notices
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Try refreshing in a moment.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 md:space-y-4">
+                  {filteredBU.map((n, i) => (
+                    <NoticeCard key={n.id} notice={n} index={i} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
 
           {/* Admin source */}
           {source === 'admin' && (

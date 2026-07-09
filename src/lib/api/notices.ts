@@ -21,17 +21,22 @@ export const noticesApi = {
   async fetchNotices(): Promise<NoticesResponse> {
     try {
       const { data, error } = await supabase.functions.invoke('scrape-notices');
-
-      if (error) {
-        console.error('Error fetching notices:', error);
-        return { success: false, error: error.message };
-      }
-
+      if (error) return { success: false, error: error.message };
       return data;
     } catch (error) {
-      console.error('Error fetching notices:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch notices';
-      return { success: false, error: errorMessage };
+      const msg = error instanceof Error ? error.message : 'Failed to fetch notices';
+      return { success: false, error: msg };
+    }
+  },
+
+  async fetchBUNotices(): Promise<NoticesResponse> {
+    try {
+      const { data, error } = await supabase.functions.invoke('scrape-bu-notices');
+      if (error) return { success: false, error: error.message };
+      return data;
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Failed to fetch university notices';
+      return { success: false, error: msg };
     }
   },
 };
