@@ -242,6 +242,51 @@ export function NoticesSection() {
             </>
           )}
 
+          {/* University (Arts) source */}
+          {source === 'university' && (
+            <>
+              <div className="mb-4">
+                <NoticeSearch value={search} onChange={setSearch} />
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Filtered from the University of Burdwan — arts, commerce, law & universal notices only.
+              </p>
+              {buLoading && buNotices.length === 0 ? (
+                <div className="space-y-3 md:space-y-4">
+                  {[0, 1, 2, 3].map((i) => (
+                    <RowSkeleton key={i} index={i} />
+                  ))}
+                </div>
+              ) : buData && !buData.success ? (
+                <div className="glass-card p-8 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Couldn't load university notices right now.
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => refetchBU()}>
+                    Try again
+                  </Button>
+                </div>
+              ) : filteredBU.length === 0 ? (
+                <div className="glass-card p-8 md:p-12 text-center">
+                  <Inbox className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    No university notices
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Try refreshing in a moment.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 md:space-y-4">
+                  {filteredBU.map((n, i) => (
+                    <NoticeCard key={n.id} notice={n} index={i} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+
           {/* Admin source */}
           {source === 'admin' && (
             <>
