@@ -144,6 +144,17 @@ export function NoticesSection() {
                   College notices
                 </button>
                 <button
+                  onClick={() => setSource('university')}
+                  className={`inline-flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
+                    source === 'university'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  University (Arts)
+                </button>
+                <button
                   onClick={() => setSource('admin')}
                   className={`inline-flex items-center gap-1.5 px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
                     source === 'admin'
@@ -164,6 +175,18 @@ export function NoticesSection() {
                   className="gap-1.5"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${collegeRefetching ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline text-xs">Refresh</span>
+                </Button>
+              )}
+              {source === 'university' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refetchBU()}
+                  disabled={buRefetching}
+                  className="gap-1.5"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${buRefetching ? 'animate-spin' : ''}`} />
                   <span className="hidden sm:inline text-xs">Refresh</span>
                 </Button>
               )}
