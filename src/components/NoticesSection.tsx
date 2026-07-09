@@ -1,4 +1,4 @@
-import { Clock, Radio, Inbox, ExternalLink, Megaphone, RefreshCw, School } from 'lucide-react';
+import { Clock, Radio, Inbox, ExternalLink, Megaphone, RefreshCw, School, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { Button } from './ui/button';
@@ -27,7 +27,7 @@ function RowSkeleton({ index }: { index: number }) {
   );
 }
 
-type Source = 'college' | 'admin';
+type Source = 'college' | 'university' | 'admin';
 
 export function NoticesSection() {
   const { ref, isVisible } = useScrollReveal<HTMLElement>();
@@ -48,6 +48,20 @@ export function NoticesSection() {
   });
 
   const collegeNotices = collegeData?.notices ?? [];
+
+  const {
+    data: buData,
+    isLoading: buLoading,
+    refetch: refetchBU,
+    isRefetching: buRefetching,
+  } = useQuery({
+    queryKey: ['bu-notices'],
+    queryFn: () => noticesApi.fetchBUNotices(),
+    staleTime: 10 * 60_000,
+    enabled: source === 'university',
+  });
+
+  const buNotices = buData?.notices ?? [];
 
   const { data: broadcasts = [], isLoading: adminLoading } = useQuery({
     queryKey: ['broadcasts', 'notices-section'],
@@ -72,6 +86,11 @@ export function NoticesSection() {
     if (!search.trim()) return byCategory;
     return fuzzySearch(byCategory, search, (n) => n.title).map((r) => r.item);
   }, [collegeNotices, category, search]);
+
+  const filteredBU = useMemo(() => {
+    if (!search.trim()) return buNotices;
+    return fuzzySearch(buNotices, search, (n) => n.title).map((r) => r.item);
+  }, [buNotices, search]);
 
   return (
     <section id="notices" className="pt-4 pb-16 md:py-24 relative" ref={ref}>
