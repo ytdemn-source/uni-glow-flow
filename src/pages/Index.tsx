@@ -57,9 +57,6 @@ const Index = () => {
         <Hero />
 
         <section className="container mx-auto px-4 pt-4 md:pt-6">
-          <NotesPromoCard />
-        </section>
-        <section className="container mx-auto px-4">
           <AdSlot />
         </section>
         <NoticesSection />
