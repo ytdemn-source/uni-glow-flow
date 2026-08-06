@@ -1,54 +1,47 @@
-# Rebrand to "A Help Deck" — Generic Student Helper
+# Give A Help Deck real character
 
-Strip all Galsi Mahavidyalaya / Galsi College branding, names, logo association, and structured-data claims. Keep current visual styling. Keep notes library, admin broadcasts + notifications, department info (generic), quick links & services.
+The site reads flat because everything is the same soft teal glass card. The chosen direction — "Tactical command hub" — turns the home page into a bento command center: deep emerald blocks, gold accents, cream paper background, and confident Space Grotesk headings.
 
-## Rename & metadata
+## Look and feel
 
-- `index.html`: title → "A Help Deck — Student Helper for Notes, Notices & Study Tools"; description, keywords, og/twitter tags rewritten with no college references, no Bengali college name, no Jakir personal credit.
-- Remove `google-site-verification` (tied to old identity) and Galsi JSON-LD (`CollegeOrUniversity` block).
-- Replace `WebSite` JSON-LD: name "A Help Deck", generic description, no author.
-- `public/llms.txt`, `public/robots.txt`, `public/sitemap.xml`: rewrite as generic student helper content.
-- `public/manifest.webmanifest`: name/short_name → "A Help Deck".
-- App title in `Admin.tsx` (`document.title`) and any other page titles → "A Help Deck".
+- Palette: deep emerald `#064e3b`, mid green `#0d7a5f`, gold `#c9a84c`, cream `#f5f0e0`.
+- Type: Space Grotesk for headings and labels, DM Sans for body.
+- Solid color blocks replace glass cards. Chunky 3xl radius, gold bottom rule on the hero, subtle dot-grid texture on accent tiles.
+- Dark mode keeps the same hues, inverted onto a near-black emerald base.
 
-## Remove college-branded UI
+## Home page structure (bento)
 
-- **Header / Hero** (`Header.tsx`, `Hero.tsx`): remove "Galsi", "Galsi Mahavidyalaya", Bengali college name, college tagline. New name "A Help Deck" with generic tagline "Your study companion".
-- **Logo**: replace `src/assets/logo.png` reference with a neutral generated mark (simple book/deck icon). Update favicon, apple-touch-icon, logo-192, logo.png with the new mark.
-- **Footer** (`Footer.tsx`): remove official website link to galsimahavidyalaya.ac.in, RSS link (feed is college-scraped), disclaimer paragraph mentioning the college, "by Jakir" credit → generic "Made for students".
-- **NoticesSection**: drop the "College Notices" toggle and scraped-notice branch entirely. Section becomes just "Announcements" fed by admin broadcasts. Remove `NoticeCard`, `NoticeSearch`, `NoticeCategoryFilter` from the section (files kept only if reused elsewhere — otherwise delete).
-- **DepartmentsSection / departmentsData**: strip college-specific department descriptions, faculty names, Burdwan University references. Keep as a neutral subject/department directory (Bengali, English, Math, Physics, etc.) with generic descriptions only.
-- **QuickLinksSection**: remove Burdwan University, WBCHSE, WBCAP, UGC, Banglar Uchchashiksha as college-official links. Keep only genuinely generic student utilities (e.g., DigiLocker, NPTEL, SWAYAM, generic calculators/timers) — user can prune later.
-- **ServicesSection / ContactSection**: remove college contact info, address, principal, phone numbers. Replace Contact with a generic "Feedback" mailto or drop entirely.
-- **NotesPromoCard**: keep, reword copy to be college-agnostic.
+```text
++--------------------------------+-------------+
+|  HERO (emerald, gold rule)     | LATEST      |
+|  A Help Deck.                  | NOTICES     |
+|  CTAs: Notices / Notes         | live feed   |
++---------+----------------------+-------------+
+| STATUS  |  NOTES & HELP LIBRARY              |
+| tile    |  two entry tiles                   |
++---------+------------------+-----------------+
+| remaining sections: notices board, departments,
+| quick links, services, contact (restyled)     |
++-----------------------------------------------+
+```
 
-## Remove college-scraper backend surface (frontend-only stripping)
+- Hero: emerald block, eyebrow label, oversized italic wordmark, cream inset paragraph, gold pill CTA to notices + outline CTA to notes.
+- Latest notices tile: white card, hard emerald border, live pulse dot, colored left rules per source (Admin / College / University), "View all updates" footer link. Keeps the existing live data.
+- Status tile: green block with resource count and department chips.
+- Library tile: white card with emerald icon block and two cream sub-tiles.
+- Services tile: gold block with dot-grid texture and contact line.
 
-- Delete usage of `scrape-notices` and `rss-feed` from the UI (`src/lib/api/notices.ts` calls, RSS link in Footer, RSS alternate link in `index.html`). Leave the edge functions in place (backend not being modified per user scope — they simply become unused).
-- Delete `BroadcastsPreview.tsx` if still unreferenced.
+Existing sections below (full notices board with the source toggle, departments, quick links, services, contact, footer) get the same token treatment so the page reads as one design, not two.
 
-## Files to edit
+## Motion
 
-- `index.html`
-- `public/llms.txt`, `public/robots.txt`, `public/sitemap.xml`, `public/manifest.webmanifest`
-- `src/components/Header.tsx`, `Hero.tsx`, `Footer.tsx`, `NoticesSection.tsx`, `DepartmentsSection.tsx`, `QuickLinksSection.tsx`, `ServicesSection.tsx`, `ContactSection.tsx`, `NotesPromoCard.tsx`
-- `src/lib/departmentsData.ts`
-- `src/pages/Index.tsx`, `Admin.tsx`, `Notes.tsx`, `Notifications.tsx`, `NoteDetail.tsx` — page titles
-- Replace `src/assets/logo.png` and `public/favicon.png` / `logo-192.png` / `apple-touch-icon.png` with a new neutral logo (generated).
+Staggered tile reveal on scroll, gentle lift on hover, gold underline sweep on links. Respects reduced-motion.
 
-## Files to delete
+## Technical notes
 
-- `src/components/BroadcastsPreview.tsx` (unused after merge)
-- Optionally `NoticeCard.tsx`, `NoticeSearch.tsx`, `NoticeCategoryFilter.tsx`, `src/lib/api/notices.ts` if no other consumer remains after the NoticesSection rewrite (will confirm during edit).
-
-## Kept as-is
-
-- Visual design system (colors, tokens, glass cards, typography) — no palette/font changes.
-- AdSense integration (user chose only the branding scope).
-- Notes library, admin dashboard, broadcasts + push notifications, PWA behavior.
-
-## Out of scope
-
-- No database schema changes.
-- No edge-function deletion.
-- No new features.
+- Rewrite the palette in `src/index.css` (light + dark), swap `--font-sans`/heading font to Space Grotesk + DM Sans, add `.tile`, `.tile-emerald`, `.tile-gold`, `.dot-grid` component classes; retire the glass-card look.
+- Load Space Grotesk + DM Sans via `<link>` in `index.html`.
+- Rebuild `src/components/Hero.tsx` as the bento block (hero + notices + status + library + services tiles), keeping the current React Query data hooks for college notices and broadcasts.
+- Restyle `NoticesSection`, `NoticeCard`, `DepartmentsSection`, `QuickLinksSection`, `ServicesSection`, `ContactSection`, `Footer`, `Header` to the new tokens.
+- `BackgroundImage.tsx` becomes a flat cream/deep-emerald base instead of the teal gradient.
+- Only presentation changes — no data, auth, or backend logic touched.
