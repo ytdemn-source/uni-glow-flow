@@ -208,7 +208,7 @@ export function NoticesSection() {
               </div>
 
               {collegeLoading && collegeNotices.length === 0 ? (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {[0, 1, 2, 3].map((i) => (
                     <RowSkeleton key={i} index={i} />
                   ))}
@@ -233,7 +233,7 @@ export function NoticesSection() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {filteredCollege.map((n, i) => (
                     <NoticeCard key={n.id} notice={n} index={i} />
                   ))}
@@ -252,7 +252,7 @@ export function NoticesSection() {
                 Filtered from the University of Burdwan — arts, commerce, law & universal notices only.
               </p>
               {buLoading && buNotices.length === 0 ? (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {[0, 1, 2, 3].map((i) => (
                     <RowSkeleton key={i} index={i} />
                   ))}
@@ -277,7 +277,7 @@ export function NoticesSection() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {filteredBU.map((n, i) => (
                     <NoticeCard key={n.id} notice={n} index={i} />
                   ))}
@@ -291,7 +291,7 @@ export function NoticesSection() {
           {source === 'admin' && (
             <>
               {adminLoading && broadcasts.length === 0 ? (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {[0, 1, 2].map((i) => (
                     <RowSkeleton key={i} index={i} />
                   ))}
@@ -307,7 +307,7 @@ export function NoticesSection() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3 md:space-y-4">
+                <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
                   {broadcasts.map((b) => (
                     <article key={b.id} className="glass-card-elevated p-5 md:p-6">
                       <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
