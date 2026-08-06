@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { NoticesSection } from '@/components/NoticesSection';
-import { NotesPromoCard } from '@/components/NotesPromoCard';
 import { AdSlot } from '@/components/AdSlot';
 
 const BackgroundImage = lazy(() =>
