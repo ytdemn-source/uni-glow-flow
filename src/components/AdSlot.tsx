@@ -33,7 +33,7 @@ export function AdSlot({ slot, format = 'auto', className = '', style }: AdSlotP
   }, []);
 
   return (
-    <div className={`w-full flex justify-center my-6 ${className}`} aria-hidden="true">
+    <div className={`w-full flex justify-center my-4 max-h-[300px] overflow-hidden ${className}`} aria-hidden="true">
       <ins
         className="adsbygoogle"
         style={{ display: 'block', width: '100%', ...style }}
