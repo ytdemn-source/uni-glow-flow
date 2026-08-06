@@ -195,7 +195,7 @@ export function Hero() {
               </div>
               <div className="flex justify-between items-center py-2 border-b border-current/20">
                 <span className="text-sm">Admin posts</span>
-                <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">
+                <span className="text-[10px] bg-current/15 px-2 py-0.5 rounded-full font-bold">
                   {broadcasts?.length ?? 0} new
                 </span>
               </div>
