@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Bell, ArrowRight, Radio, Clock, Sparkles, Megaphone } from 'lucide-react';
-import { Button } from './ui/button';
+import {
+  Bell,
+  ArrowRight,
+  BookOpen,
+  Library,
+  FileText,
+  Megaphone,
+  GraduationCap,
+} from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { noticesApi } from '@/lib/api/notices';
 import { listBroadcasts } from '@/lib/api/broadcasts';
@@ -14,15 +21,15 @@ interface NoticeLike {
   date: string;
   url: string;
   isNew?: boolean;
-  isImportant?: boolean;
   source: 'college' | 'admin';
   sourceLabel: string;
 }
 
-function LatestNoticeRow({ item, index }: { item: NoticeLike; index: number }) {
+function NoticeRow({ item }: { item: NoticeLike }) {
   const formattedDate = new Date(item.date).toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'short',
+    year: 'numeric',
   });
 
   return (
@@ -30,30 +37,17 @@ function LatestNoticeRow({ item, index }: { item: NoticeLike; index: number }) {
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-start gap-3 p-3 rounded-xl bg-background/40 hover:bg-background/80 border border-transparent hover:border-border/60 transition-all duration-300 animate-fade-in"
-      style={{ animationDelay: `${0.25 + index * 0.1}s` }}
+      className={`group block p-3 border-l-4 transition-colors bg-secondary/40 hover:bg-secondary ${
+        item.source === 'admin' ? 'border-gold' : 'border-accent'
+      }`}
     >
-      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-        <Bell className="w-5 h-5" />
+      <div className="flex justify-between gap-2 eyebrow text-accent mb-1">
+        <span>{item.sourceLabel}</span>
+        <span className="text-muted-foreground">{formattedDate}</span>
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-            {item.sourceLabel}
-          </span>
-          {item.isNew && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
-              New
-            </span>
-          )}
-          <span className="text-[10px] text-muted-foreground ml-auto">
-            {formattedDate}
-          </span>
-        </div>
-        <p className="text-sm font-medium text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-          {item.title}
-        </p>
-      </div>
+      <p className="text-sm font-semibold leading-snug text-card-foreground line-clamp-2">
+        {item.title}
+      </p>
     </a>
   );
 }
@@ -83,141 +77,201 @@ export function Hero() {
       date: b.created_at,
       url: b.url || '#notices',
       isNew: true,
-      isImportant: false,
       source: 'admin' as const,
       sourceLabel: 'Admin',
     }));
     return [...adminNotices, ...collegeNotices]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 3);
+      .slice(0, 4);
   }, [collegeData, broadcasts]);
 
   const isLoading = collegeLoading || adminLoading;
+  const noticeCount = (collegeData?.notices?.length ?? 0) + (broadcasts?.length ?? 0);
 
   return (
-    <section className="relative min-h-[92vh] md:min-h-[85vh] flex items-center overflow-hidden pt-20 md:pt-24 pb-12 md:pb-16">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 -z-20 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[60vw] h-[60vw] rounded-full bg-primary/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 blur-[100px]" />
-        <div className="absolute inset-0 bg-pattern opacity-20" />
-      </div>
+    <section className="pt-24 md:pt-28 pb-8 md:pb-12">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          {/* Hero module */}
+          <div className="md:col-span-8 tile-emerald p-7 md:p-10 flex flex-col justify-between animate-fade-in-up">
+            <div className="relative z-10">
+              <span className="eyebrow text-gold block mb-5">
+                Study Desk // Everything in one place
+              </span>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left: branding + CTA */}
-          <div className="max-w-xl animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6 md:mb-8">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">
-                Student announcements, updated live
+              <div className="flex items-start gap-4 mb-6">
+                <img
+                  src={logo}
+                  alt="A Help Deck logo"
+                  className="w-14 h-14 md:w-16 md:h-16 object-contain flex-shrink-0"
+                />
+                <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[0.9] italic">
+                  A Help<br />Deck.
+                </h1>
+              </div>
+
+              <p className="max-w-md text-base md:text-lg leading-relaxed font-medium bg-background text-foreground p-4 rounded-2xl">
+                Get all your study solutions in one deck — live notices, shared
+                subject notes, and free study tools, without digging through
+                scattered sites.
+              </p>
+            </div>
+
+            <div className="mt-8 md:mt-12 flex flex-wrap gap-3 relative z-10">
+              <a
+                href="#notices"
+                className="inline-flex items-center gap-2 bg-gold text-gold-foreground px-6 py-3 rounded-full font-bold hover:brightness-110 transition"
+              >
+                <Bell className="w-4 h-4" />
+                View all notices
+              </a>
+              <Link
+                to="/notes"
+                className="inline-flex items-center gap-2 border border-primary-foreground/40 px-6 py-3 rounded-full font-bold hover:bg-primary-foreground/10 transition"
+              >
+                <BookOpen className="w-4 h-4" />
+                Notes library
+              </Link>
+            </div>
+
+            <div className="absolute top-0 right-0 opacity-10 w-64 h-64 border-r-8 border-t-8 border-gold rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          {/* Latest notices feed */}
+          <div className="md:col-span-4 tile p-6 flex flex-col animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="font-display font-bold text-lg uppercase tracking-tight">
+                Latest Notices
+              </h2>
+              <span className="flex items-center gap-1.5 eyebrow text-accent">
+                <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                Live
               </span>
             </div>
 
-            <div className="flex items-center gap-4 mb-5 md:mb-6">
-              <img
-                src={logo}
-                alt="A Help Deck logo"
-                className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg"
-              />
-              <div>
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                  <span className="gradient-text">A Help Deck</span>
-                </h1>
-                <p className="text-base md:text-lg text-muted-foreground mt-1">
-                  Your study companion
-                </p>
-              </div>
+            <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1">
+              {isLoading ? (
+                [0, 1, 2].map((i) => (
+                  <div key={i} className="p-3 space-y-2 bg-secondary/40">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                ))
+              ) : latest.length === 0 ? (
+                <div className="text-center py-10">
+                  <Bell className="w-9 h-9 text-muted-foreground mx-auto mb-3 opacity-50" />
+                  <p className="text-sm text-muted-foreground">
+                    No notices available right now.
+                  </p>
+                </div>
+              ) : (
+                latest.map((item) => <NoticeRow key={item.id} item={item} />)
+              )}
             </div>
 
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-6 md:mb-8">
-              Stay ahead with the latest college and university notices, results, and
-              announcements — all in one place. No more digging through scattered sites.
-            </p>
+            <a
+              href="#notices"
+              className="mt-auto pt-4 eyebrow text-accent text-center hover:underline"
+            >
+              View all updates →
+            </a>
+          </div>
 
-            <div className="flex flex-wrap items-center gap-3 mb-8 md:mb-10">
-              <Button variant="hero" size="xl" className="gap-2" asChild>
-                <a href="#notices">
-                  <Bell className="w-5 h-5" />
-                  View All Notices
-                </a>
-              </Button>
-              <Button variant="hero-secondary" size="xl" className="gap-2" asChild>
-                <Link to="/notifications">
-                  <Megaphone className="w-5 h-5" />
-                  Notifications Feed
-                </Link>
-              </Button>
+          {/* Status tile */}
+          <div className="md:col-span-3 tile-green p-6 flex flex-col justify-between animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <div>
+              <p className="eyebrow opacity-75 mb-1">Desk status</p>
+              <h3 className="font-display text-4xl font-bold">
+                {isLoading ? '—' : noticeCount}
+              </h3>
+              <p className="text-xs font-medium opacity-90">Notices tracked right now</p>
             </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-              <div className="inline-flex items-center gap-1.5">
-                <Radio className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
-                <span>Live updates</span>
+            <div className="mt-6 space-y-1">
+              <div className="flex justify-between items-center py-2 border-b border-current/20">
+                <span className="text-sm">College feed</span>
+                <span className="text-[10px] bg-gold text-gold-foreground px-2 py-0.5 rounded-full font-bold">
+                  Live
+                </span>
               </div>
-              <div className="inline-flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                <span>Auto-refreshed</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-primary" />
-                <span>Important notices highlighted</span>
+              <div className="flex justify-between items-center py-2 border-b border-current/20">
+                <span className="text-sm">Admin posts</span>
+                <span className="text-[10px] bg-current/15 px-2 py-0.5 rounded-full font-bold">
+                  {broadcasts?.length ?? 0} new
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Right: latest notices preview */}
-          <div className="relative animate-fade-in" style={{ animationDelay: '0.15s' }}>
-            <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 rounded-[2rem] blur-2xl -z-10" />
-            <div className="glass-card-elevated rounded-3xl p-5 md:p-7 shadow-2xl">
-              <div className="flex items-center justify-between mb-4 md:mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Bell className="w-4 h-4 text-primary" />
-                  </div>
-                  <h2 className="text-lg md:text-xl font-bold text-foreground">Latest Notices</h2>
-                </div>
-                <Button variant="ghost" size="sm" className="gap-1.5 text-primary" asChild>
-                  <a href="#notices">
-                    View all
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                </Button>
+          {/* Library tile */}
+          <div className="md:col-span-6 tile p-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center gap-4 mb-5">
+              <div className="bg-primary text-gold p-3 rounded-2xl">
+                <Library className="w-6 h-6" />
               </div>
+              <h3 className="font-display text-2xl font-bold">Help Library</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link
+                to="/notes"
+                className="p-4 rounded-2xl bg-secondary hover:bg-gold hover:text-gold-foreground transition-all group"
+              >
+                <p className="font-bold flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Shared notes
+                </p>
+                <p className="text-xs text-muted-foreground group-hover:text-gold-foreground/80 mt-1">
+                  Subject-wise notes uploaded for students
+                </p>
+              </Link>
+              <Link
+                to="/notifications"
+                className="p-4 rounded-2xl bg-secondary hover:bg-gold hover:text-gold-foreground transition-all group"
+              >
+                <p className="font-bold flex items-center gap-2">
+                  <Megaphone className="w-4 h-4" />
+                  Announcements
+                </p>
+                <p className="text-xs text-muted-foreground group-hover:text-gold-foreground/80 mt-1">
+                  Every update posted by the admin team
+                </p>
+              </Link>
+            </div>
+          </div>
 
-              <div className="space-y-2">
-                {isLoading ? (
-                  <>
-                    {[0, 1, 2].map((i) => (
-                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-background/40">
-                        <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-3 w-24" />
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : latest.length === 0 ? (
-                  <div className="text-center py-8 md:py-10">
-                    <Bell className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
-                    <p className="text-sm text-muted-foreground">No notices available right now.</p>
-                  </div>
-                ) : (
-                  latest.map((item, i) => <LatestNoticeRow key={item.id} item={item} index={i} />)
-                )}
+          {/* Quick jump tile */}
+          <div className="md:col-span-3 tile-gold dot-grid p-6 animate-fade-in" style={{ animationDelay: '0.25s' }}>
+            <div className="relative z-10">
+              <h3 className="font-display text-xl font-bold mb-4 uppercase">Jump to</h3>
+              <ul className="space-y-3">
+                {[
+                  { label: 'Subjects', href: '#departments' },
+                  { label: 'Quick links', href: '#quick-links' },
+                  { label: 'Student services', href: '#services' },
+                ].map((l) => (
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      className="flex items-center gap-2 text-sm font-bold link-sweep"
+                    >
+                      <span className="w-1.5 h-1.5 bg-current rotate-45" />
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 pt-4 border-t border-current/25">
+                <p className="eyebrow flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  Built for students
+                </p>
+                <a
+                  href="#contact"
+                  className="text-sm font-bold inline-flex items-center gap-1 mt-1 link-sweep"
+                >
+                  Need help? Contact us
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
               </div>
-
-              {!isLoading && latest.length > 0 && (
-                <div className="mt-5 pt-4 border-t border-border/50">
-                  <a
-                    href="#notices"
-                    className="block w-full text-center text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                  >
-                    Browse the full notices board
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </div>
