@@ -1,8 +1,9 @@
-import { ChevronDown, ChevronUp, ExternalLink, Download, BookOpen, Calendar, FileText, GraduationCap, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Download, BookOpen, Calendar, FileText, GraduationCap, Loader2, RefreshCw } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -84,6 +85,43 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
     onToggle();
   };
 
+  const { data: live, isFetching, refetch } = useQuery({
+    queryKey: ['department-docs', department.href],
+    enabled: isOpen && /^https?:/.test(department.href),
+    staleTime: 1000 * 60 * 60, // refresh hourly
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('scrape-department-docs', {
+        body: { url: department.href },
+      });
+      if (error) throw error;
+      return data as {
+        success: boolean;
+        syllabus: DownloadableItem[];
+        routine: DownloadableItem[];
+        results: DownloadableItem[];
+        notices: DownloadableItem[];
+        fetchedAt?: string;
+      };
+    },
+  });
+
+  const merge = (fallback: DownloadableItem[], fetched?: DownloadableItem[]) => {
+    const map = new Map<string, DownloadableItem>();
+    for (const item of [...(fetched ?? []), ...fallback]) {
+      if (!map.has(item.url)) map.set(item.url, item);
+    }
+    return Array.from(map.values());
+  };
+
+  const docs = {
+    syllabus: merge(department.syllabus, live?.syllabus),
+    routine: merge(department.routine, live?.routine),
+    results: merge(department.results, live?.results),
+    notices: merge(department.notices, live?.notices),
+  };
+
+
   return (
     <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="w-full">
       <div className="tile overflow-hidden">
@@ -126,7 +164,27 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
         <CollapsibleContent>
           <div className="px-5 pb-5 md:px-6 md:pb-6">
+            <div className="flex items-center justify-between gap-2 mb-3 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${isFetching ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                {isFetching
+                  ? 'Fetching latest documents…'
+                  : live?.fetchedAt
+                    ? `Auto-updated ${new Date(live.fetchedAt).toLocaleString()}`
+                    : 'Auto-updates from the official department page'}
+              </span>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                disabled={isFetching}
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-primary/10 text-primary disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
             <Tabs defaultValue="syllabus" className="w-full">
+
               <TabsList className="w-full tile grid grid-cols-4 gap-1 p-1 h-auto">
                 <TabsTrigger value="syllabus" className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-primary/20 flex items-center justify-center gap-1">
                   <BookOpen className="w-3 h-3 md:w-4 md:h-4" />
@@ -149,7 +207,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
               <div className="mt-4">
                 <TabsContent value="syllabus" className="mt-0">
                   <DownloadableList 
-                    items={department.syllabus} 
+                    items={docs.syllabus} 
                     emptyMessage="Syllabus will be available soon."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -158,7 +216,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="routine" className="mt-0">
                   <DownloadableList 
-                    items={department.routine} 
+                    items={docs.routine} 
                     emptyMessage="Class routine will be available soon."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -167,7 +225,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="results" className="mt-0">
                   <DownloadableList 
-                    items={department.results} 
+                    items={docs.results} 
                     emptyMessage="Results will be published here."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -176,7 +234,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="notices" className="mt-0">
                   <DownloadableList 
-                    items={department.notices} 
+                    items={docs.notices} 
                     emptyMessage="Department notices will appear here."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
