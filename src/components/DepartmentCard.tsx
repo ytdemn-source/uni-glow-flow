@@ -164,7 +164,27 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
         <CollapsibleContent>
           <div className="px-5 pb-5 md:px-6 md:pb-6">
+            <div className="flex items-center justify-between gap-2 mb-3 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${isFetching ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                {isFetching
+                  ? 'Fetching latest documents…'
+                  : live?.fetchedAt
+                    ? `Auto-updated ${new Date(live.fetchedAt).toLocaleString()}`
+                    : 'Auto-updates from the official department page'}
+              </span>
+              <button
+                type="button"
+                onClick={() => refetch()}
+                disabled={isFetching}
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-primary/10 text-primary disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
             <Tabs defaultValue="syllabus" className="w-full">
+
               <TabsList className="w-full tile grid grid-cols-4 gap-1 p-1 h-auto">
                 <TabsTrigger value="syllabus" className="text-xs md:text-sm py-2 px-2 data-[state=active]:bg-primary/20 flex items-center justify-center gap-1">
                   <BookOpen className="w-3 h-3 md:w-4 md:h-4" />
