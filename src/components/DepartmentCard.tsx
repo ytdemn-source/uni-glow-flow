@@ -84,6 +84,43 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
     onToggle();
   };
 
+  const { data: live, isFetching, refetch } = useQuery({
+    queryKey: ['department-docs', department.href],
+    enabled: isOpen && /^https?:/.test(department.href),
+    staleTime: 1000 * 60 * 60, // refresh hourly
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('scrape-department-docs', {
+        body: { url: department.href },
+      });
+      if (error) throw error;
+      return data as {
+        success: boolean;
+        syllabus: DownloadableItem[];
+        routine: DownloadableItem[];
+        results: DownloadableItem[];
+        notices: DownloadableItem[];
+        fetchedAt?: string;
+      };
+    },
+  });
+
+  const merge = (fallback: DownloadableItem[], fetched?: DownloadableItem[]) => {
+    const map = new Map<string, DownloadableItem>();
+    for (const item of [...(fetched ?? []), ...fallback]) {
+      if (!map.has(item.url)) map.set(item.url, item);
+    }
+    return Array.from(map.values());
+  };
+
+  const docs = {
+    syllabus: merge(department.syllabus, live?.syllabus),
+    routine: merge(department.routine, live?.routine),
+    results: merge(department.results, live?.results),
+    notices: merge(department.notices, live?.notices),
+  };
+
+
   return (
     <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="w-full">
       <div className="tile overflow-hidden">
