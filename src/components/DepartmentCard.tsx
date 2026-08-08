@@ -1,8 +1,9 @@
-import { ChevronDown, ChevronUp, ExternalLink, Download, BookOpen, Calendar, FileText, GraduationCap, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Download, BookOpen, Calendar, FileText, GraduationCap, Loader2, RefreshCw } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -186,7 +187,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
               <div className="mt-4">
                 <TabsContent value="syllabus" className="mt-0">
                   <DownloadableList 
-                    items={department.syllabus} 
+                    items={docs.syllabus} 
                     emptyMessage="Syllabus will be available soon."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -195,7 +196,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="routine" className="mt-0">
                   <DownloadableList 
-                    items={department.routine} 
+                    items={docs.routine} 
                     emptyMessage="Class routine will be available soon."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -204,7 +205,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="results" className="mt-0">
                   <DownloadableList 
-                    items={department.results} 
+                    items={docs.results} 
                     emptyMessage="Results will be published here."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
@@ -213,7 +214,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
 
                 <TabsContent value="notices" className="mt-0">
                   <DownloadableList 
-                    items={department.notices} 
+                    items={docs.notices} 
                     emptyMessage="Department notices will appear here."
                     onDownload={handleDownload}
                     downloadingUrl={downloadingUrl}
