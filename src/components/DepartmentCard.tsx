@@ -88,7 +88,7 @@ export function DepartmentCard({ department, isOpen, onToggle }: DepartmentCardP
     <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="w-full">
       <div className="tile overflow-hidden">
         <CollapsibleTrigger asChild>
-          <button className="w-full p-5 md:p-6 text-left group">
+          <button className="w-full p-5 md:p-6 text-left group relative">
             <div className={`absolute inset-0 bg-gradient-to-br ${department.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
             <div className="relative z-10 flex items-center justify-between">
               <div className="flex items-center gap-3">
