@@ -118,13 +118,13 @@ export function Hero() {
             </div>
 
             <div className="mt-8 md:mt-12 flex flex-wrap gap-3 relative z-10">
-              <a
-                href="#notices"
+              <Link
+                to="/notices"
                 className="inline-flex items-center gap-2 bg-gold text-gold-foreground px-6 py-3 rounded-full font-bold hover:brightness-110 transition"
               >
                 <Bell className="w-4 h-4" />
                 View all notices
-              </a>
+              </Link>
               <Link
                 to="/notes"
                 className="inline-flex items-center gap-2 border border-primary-foreground/40 px-6 py-3 rounded-full font-bold hover:bg-primary-foreground/10 transition"
@@ -169,12 +169,12 @@ export function Hero() {
               )}
             </div>
 
-            <a
-              href="#notices"
+            <Link
+              to="/notices"
               className="mt-auto pt-4 eyebrow text-accent text-center hover:underline"
             >
               View all updates →
-            </a>
+            </Link>
           </div>
 
           {/* Status tile */}
@@ -244,18 +244,18 @@ export function Hero() {
               <h3 className="font-display text-xl font-bold mb-4 uppercase">Jump to</h3>
               <ul className="space-y-3">
                 {[
-                  { label: 'Subjects', href: '#departments' },
-                  { label: 'Quick links', href: '#quick-links' },
-                  { label: 'Student services', href: '#services' },
+                  { label: 'Subjects', href: '/subjects' },
+                  { label: 'Quick links', href: '/more' },
+                  { label: 'Student services', href: '/more' },
                 ].map((l) => (
                   <li key={l.label}>
-                    <a
-                      href={l.href}
+                    <Link
+                      to={l.href}
                       className="flex items-center gap-2 text-sm font-bold link-sweep"
                     >
                       <span className="w-1.5 h-1.5 bg-current rotate-45" />
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -264,13 +264,13 @@ export function Hero() {
                   <GraduationCap className="w-3.5 h-3.5" />
                   Built for students
                 </p>
-                <a
-                  href="#contact"
+                <Link
+                  to="/more"
                   className="text-sm font-bold inline-flex items-center gap-1 mt-1 link-sweep"
                 >
                   Need help? Contact us
                   <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
