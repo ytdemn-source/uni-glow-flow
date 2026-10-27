@@ -64,13 +64,7 @@ const Index = () => {
         <div className="hidden md:block">
           <Suspense fallback={null}>
             <DepartmentsSection />
-          </Suspense>
-        </div>
-        <Suspense fallback={null}>
-          <QuickLinksSection />
-        </Suspense>
-        <div className="hidden md:block">
-          <Suspense fallback={null}>
+            <QuickLinksSection />
             <ServicesSection />
             <ContactSection />
           </Suspense>
