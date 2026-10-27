@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import logo from '@/assets/logo.png';
 
@@ -11,6 +11,7 @@ const navLinks = [
 ];
 
 export function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const lastScrolled = useRef(false);
 
   useEffect(() => {
