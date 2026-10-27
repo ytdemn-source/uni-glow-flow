@@ -42,7 +42,7 @@ export default function NoteDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-24 md:pb-0">
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-16 max-w-3xl">
         <Link to="/notes" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
