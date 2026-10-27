@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Button } from './ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import logo from '@/assets/logo.png';
 
@@ -14,7 +12,6 @@ const navLinks = [
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const lastScrolled = useRef(false);
 
   useEffect(() => {
@@ -73,35 +70,7 @@ export function Header() {
 
           <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
           </div>
-        </div>
-
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${
-            isMobileMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <nav className="pb-4">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-secondary/50"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </nav>
         </div>
       </div>
     </header>

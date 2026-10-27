@@ -1,4 +1,5 @@
 import { Heart, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 import { AdSlot } from '@/components/AdSlot';
 
@@ -6,7 +7,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-12 bg-primary text-primary-foreground border-t-4 border-gold">
+    <footer className="py-12 pb-28 md:pb-12 bg-primary text-primary-foreground border-t-4 border-gold">
       <div className="container mx-auto px-4">
         <AdSlot />
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -19,18 +20,18 @@ export function Footer() {
           </div>
 
           <nav className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-            <a href="#notices" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
+            <Link to="/notices" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
               Announcements
-            </a>
-            <a href="#quick-links" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
+            </Link>
+            <Link to="/more" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
               Quick Links
-            </a>
-            <a href="#departments" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
+            </Link>
+            <Link to="/subjects" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
               Subjects
-            </a>
-            <a href="#contact" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
+            </Link>
+            <Link to="/more" className="text-sm opacity-85 hover:text-gold transition-colors link-sweep">
               Feedback
-            </a>
+            </Link>
           </nav>
 
           <div className="text-center md:text-right">

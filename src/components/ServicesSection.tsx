@@ -30,7 +30,7 @@ const services: Service[] = [
     icon: Bell,
     title: 'Announcements',
     description: 'Latest updates from admins',
-    href: '#notices',
+    href: '/notices',
   },
   {
     icon: Bookmark,
