@@ -89,7 +89,7 @@ export function Hero() {
   const noticeCount = (collegeData?.notices?.length ?? 0) + (broadcasts?.length ?? 0);
 
   return (
-    <section className="pt-24 md:pt-28 pb-8 md:pb-12">
+    <section className="pt-32 md:pt-28 pb-8 md:pb-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Hero module */}

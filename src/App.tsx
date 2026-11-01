@@ -14,7 +14,6 @@ import NoticesPage from "./pages/NoticesPage";
 import SubjectsPage from "./pages/SubjectsPage";
 import MorePage from "./pages/MorePage";
 import NotFound from "./pages/NotFound";
-import { BottomTabBar } from "@/components/BottomTabBar";
 
 const queryClient = new QueryClient();
 
@@ -46,7 +45,6 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <BottomTabBar />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
