@@ -8,9 +8,9 @@ export default function NoticesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen pb-24 md:pb-0">
+    <div className="min-h-screen pb-12 md:pb-0">
       <Header />
-      <main className="pt-20 md:pt-24">
+      <main className="pt-32 md:pt-24">
         <NoticesSection />
       </main>
     </div>

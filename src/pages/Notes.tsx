@@ -52,9 +52,9 @@ export default function NotesPage() {
 
 
   return (
-    <div className="min-h-screen pb-24 md:pb-0">
+    <div className="min-h-screen pb-12 md:pb-0">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main className="container mx-auto px-4 pt-32 pb-16 max-w-4xl">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="w-4 h-4" /> Back to home
           </Link>
