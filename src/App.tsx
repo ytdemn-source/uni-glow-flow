@@ -14,7 +14,6 @@ import NoticesPage from "./pages/NoticesPage";
 import SubjectsPage from "./pages/SubjectsPage";
 import MorePage from "./pages/MorePage";
 import NotFound from "./pages/NotFound";
-import { BottomTabBar } from "@/components/BottomTabBar";
 
 const queryClient = new QueryClient();
 
